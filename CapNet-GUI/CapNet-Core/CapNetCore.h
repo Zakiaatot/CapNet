@@ -64,6 +64,7 @@ public:
 		std::wstring info;
 	};
 	typedef VOID(*LISTEN_CALLBACK_FUNC)(CapNetCore::Pack& pack);
+	typedef VOID(*LISTEN_END_CALLBACK_FUNC)(std::wstring& msg);
 
 	StatusVoid Init(); // 初始化
 	Status<std::vector<std::pair<int, std::string>>> FindAllDev(); // 获取所有网卡
@@ -73,7 +74,8 @@ public:
 		INT devId,
 		const WCHAR* type,
 		const WCHAR* ip,
-		LISTEN_CALLBACK_FUNC pCallback
+		LISTEN_CALLBACK_FUNC pCallback,
+		LISTEN_END_CALLBACK_FUNC pEndCallback
 	);
 	StatusVoid EndListen(); // 结束监听
 private:

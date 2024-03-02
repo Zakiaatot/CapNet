@@ -187,15 +187,26 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CapNet-GUI.h" />
-    <ClInclude Include="CapNet-GUIDlg.h" />
+    <ClInclude Include="CapNetCommon.h" />
+    <ClInclude Include="CapNetDevSelectorComboBox.h" />
+    <ClInclude Include="CapNetGUI.h" />
+    <ClInclude Include="CapNetGUIDlg.h" />
+    <ClInclude Include="CapNetIpEdit.h" />
+    <ClInclude Include="CapNetListenButton.h" />
+    <ClInclude Include="CapNetPackPoolListCtrl.h" />
+    <ClInclude Include="CapNetPacTypeComboBox.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CapNet-GUI.cpp" />
-    <ClCompile Include="CapNet-GUIDlg.cpp" />
+    <ClCompile Include="CapNetDevSelectorComboBox.cpp" />
+    <ClCompile Include="CapNetGUI.cpp" />
+    <ClCompile Include="CapNetGUIDlg.cpp" />
+    <ClCompile Include="CapNetIpEdit.cpp" />
+    <ClCompile Include="CapNetListenButton.cpp" />
+    <ClCompile Include="CapNetPackPoolListCtrl.cpp" />
+    <ClCompile Include="CapNetPacTypeComboBox.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>

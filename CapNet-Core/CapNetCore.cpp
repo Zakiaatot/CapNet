@@ -10,6 +10,7 @@
 BOOL gInit = FALSE;
 std::map<INT, pcap_if_t*> gDevMap;
 CapNetListenThread* pListenThread_ = NULL;
+pcap_t* gAdhandle = NULL;
 
 
 CapNetCore::StatusVoid CapNetCore::LoadNpcapDlls()
@@ -84,7 +85,8 @@ CapNetCore::StatusVoid CapNetCore::BeginListen
 	INT devId,
 	const WCHAR* type,
 	const WCHAR* ip,
-	CapNetCore::LISTEN_CALLBACK_FUNC pCallback
+	CapNetCore::LISTEN_CALLBACK_FUNC pCallback,
+	CapNetCore::LISTEN_END_CALLBACK_FUNC pEndCallback
 )
 {
 	if (!gInit)
@@ -96,23 +98,40 @@ CapNetCore::StatusVoid CapNetCore::BeginListen
 	{
 		return StatusVoid::Err("[CapNetCore] Error Dev Select");
 	}
+	if (pListenThread_)
+	{
+		if (pListenThread_->Running())
+		{
+			return StatusVoid::Err("[CapNetCore] Another Listening Thread is Running");
+		}
+		else
+		{
+			delete pListenThread_;
+			pListenThread_ = NULL;
+		}
+	}
 	/* Open the adapter */
-	pcap_t* adhandle;
+	if (gAdhandle)
+	{
+		pcap_close(gAdhandle);
+	}
 	CHAR errbuf[PCAP_ERRBUF_SIZE];
-	if ((adhandle = pcap_open_live(dev->name,	// name of the device
+	if ((gAdhandle = pcap_open_live(dev->name,	// name of the device
 		65536,			// portion of the packet to capture. 
 		// 65536 grants that the whole packet will be captured on all the MACs.
 		1,				// promiscuous mode (nonzero means promiscuous)
-		1000,			// read timeout
+		100,			// read timeout
 		errbuf			// error buffer
 	)) == NULL)
 	{
 		return StatusVoid::Err("[CapNetCore] Unable to open the adapter. %s is not supported by Npcap.", dev->description);
 	}
 
-	pListenThread_ = new CapNetListenThread(adhandle, type, ip, pCallback);
+	pListenThread_ = new CapNetListenThread(gAdhandle, type, ip, pCallback, pEndCallback);
 	if (!pListenThread_->Start())
 	{
+		delete pListenThread_;
+		pListenThread_ = NULL;
 		return StatusVoid::Err("[CapNetCore] Start Listen Thread Error.");
 	}
 
@@ -121,5 +140,12 @@ CapNetCore::StatusVoid CapNetCore::BeginListen
 
 CapNetCore::StatusVoid CapNetCore::EndListen()
 {
+	if (pListenThread_)
+	{
+		pListenThread_->Kill();
+	}
+	delete pListenThread_;
+	pListenThread_ = NULL;
+
 	return StatusVoid();
 }

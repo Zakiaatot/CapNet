@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CapNet-GUI.h">
+    <ClInclude Include="CapNetGUI.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CapNet-GUIDlg.h">
+    <ClInclude Include="CapNetGUIDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
@@ -30,15 +30,48 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CapNetPackPoolListCtrl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CapNetCommon.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CapNetPacTypeComboBox.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CapNetDevSelectorComboBox.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CapNetIpEdit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CapNetListenButton.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CapNet-GUI.cpp">
+    <ClCompile Include="CapNetGUI.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CapNet-GUIDlg.cpp">
+    <ClCompile Include="CapNetGUIDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Utils.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CapNetPackPoolListCtrl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CapNetPacTypeComboBox.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CapNetDevSelectorComboBox.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CapNetIpEdit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CapNetListenButton.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -11,7 +11,7 @@ CapNetThread::CapNetThread()
 CapNetThread::~CapNetThread()
 {
 	if (hThread_ != NULL)
-		CloseHandle(hThread_);
+		KillThread();
 }
 
 bool CapNetThread::Start()

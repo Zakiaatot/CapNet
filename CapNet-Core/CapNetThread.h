@@ -6,18 +6,19 @@ class CapNetThread
 {
 public:
 	CapNetThread();
-	virtual ~CapNetThread();
-
+	~CapNetThread();
 	virtual void Run() = 0;
 	bool Start();
 	void Wait(DWORD timeout = INFINITE);
 	void SetAutoDelete();
+	HANDLE GetHandle()const { return hThread_; }
 
 private:
 	HANDLE hThread_;
 	unsigned threadId_;
 	bool autoDelete_;
 	static unsigned __stdcall ThreadFun(void* p);
+	VOID KillThread() const { CloseHandle(hThread_); }
 };
 #endif // !_CAPNET_THREAD_H_
 

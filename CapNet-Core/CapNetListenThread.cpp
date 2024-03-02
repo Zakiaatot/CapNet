@@ -11,15 +11,33 @@ CapNetListenThread::CapNetListenThread
 	pcap_t* adhandle,
 	const WCHAR* type,
 	const WCHAR* ip,
-	CapNetCore::LISTEN_CALLBACK_FUNC pCallback
-) :adhandle_(adhandle), isRunning_(FALSE), errMsg_(), type_(type), ip_(ip), pCallback_(pCallback), packMap_()
+	CapNetCore::LISTEN_CALLBACK_FUNC pCallback,
+	CapNetCore::LISTEN_END_CALLBACK_FUNC pEndCallback
+) :
+	kill_(FALSE),
+	adhandle_(adhandle),
+	isRunning_(FALSE),
+	errMsg_(),
+	type_(type),
+	ip_(ip),
+	pCallback_(pCallback),
+	pEndCallback_(pEndCallback),
+	packMap_()
 {
 }
 
 
 CapNetListenThread::~CapNetListenThread()
 {
+
 }
+
+VOID CapNetListenThread::Kill()
+{
+	TerminateThread(GetHandle(), 0);
+	Wait();
+}
+
 
 void CapNetListenThread::Run()
 {
@@ -33,7 +51,11 @@ void CapNetListenThread::Run()
 	char timestr[64];
 	UINT i = 0;
 	while ((res = pcap_next_ex(adhandle_, &header, &pkt_data)) >= 0) {
-
+		if (kill_)
+		{
+			res = 0;
+			break;
+		}
 		if (res == 0)
 			/* Timeout elapsed */
 			continue;
@@ -71,6 +93,16 @@ void CapNetListenThread::Run()
 		wsprintfA(buf, "[CapNetCore] Error reading the packets: %s\n", pcap_geterr(adhandle_));
 		CA2W ca2w(buf);
 		errMsg_ = std::wstring(ca2w);
+		pEndCallback_(errMsg_);
+	}
+	else if (res == 0)
+	{
+		//  ÷∂ØΩ· ¯
+	}
+	else
+	{
+		errMsg_ = L"[CapNetCore] Unknown Error";
+		pEndCallback_(errMsg_);
 	}
 	isRunning_ = FALSE;
 }

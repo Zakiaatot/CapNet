@@ -2,8 +2,8 @@
 #include <afxshellmanager.h>
 #include <afxvisualmanager.h>
 #include <afxvisualmanagerwindows.h>
-#include "CapNet-GUI.h"
-#include "CapNet-GUIDlg.h"
+#include "CapNetGUI.h"
+#include "CapNetGUIDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -75,7 +75,7 @@ BOOL CCapNetGUIApp::InitInstance()
 	// 更改用于存储设置的注册表项
 	// TODO: 应适当修改该字符串，
 	// 例如修改为公司或组织名
-	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
+	SetRegistryKey(_T("Zakiaatot@github"));
 
 	CCapNetGUIDlg dlg;
 	m_pMainWnd = &dlg;
