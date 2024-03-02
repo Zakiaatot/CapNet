@@ -72,8 +72,8 @@ public:
 	StatusVoid BeginListen // ¿ªÊ¼¼àÌý
 	(
 		INT devId,
-		const WCHAR* type,
-		const WCHAR* ip,
+		std::wstring type,
+		std::wstring  ip,
 		LISTEN_CALLBACK_FUNC pCallback,
 		LISTEN_END_CALLBACK_FUNC pEndCallback
 	);

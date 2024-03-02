@@ -83,8 +83,8 @@ CapNetCore::StatusVoid CapNetCore::FreeAllDev()
 CapNetCore::StatusVoid CapNetCore::BeginListen
 (
 	INT devId,
-	const WCHAR* type,
-	const WCHAR* ip,
+	std::wstring type,
+	std::wstring ip,
 	CapNetCore::LISTEN_CALLBACK_FUNC pCallback,
 	CapNetCore::LISTEN_END_CALLBACK_FUNC pEndCallback
 )

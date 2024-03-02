@@ -1,7 +1,7 @@
-#ifndef _UTILS_H_
-#define _UTILS_H_
+#ifndef _CAPNET_UTILS_H_
+#define _CAPNET_UTILS_H_
 
-namespace Utils
+namespace CapNetUtils
 {
 	// Alert
 	void AlertErrorW(const wchar_t* msg, ...);
@@ -14,6 +14,6 @@ namespace Utils
 	int AlertQueA(const char* msg, ...);
 }
 
-#endif // !_UTILS_H_
+#endif // !_CAPNET_UTILS_H_
 
 

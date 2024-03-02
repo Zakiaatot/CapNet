@@ -1,6 +1,6 @@
 #include <Windows.h>
 #include <atlstr.h>
-#include "Utils.h"
+#include "CapNetUtils.h"
 
 
 
@@ -15,7 +15,7 @@ static INT AlertA(UINT option, const char* msg)
 }
 
 
-void Utils::AlertErrorW(const wchar_t* msg, ...)
+void CapNetUtils::AlertErrorW(const wchar_t* msg, ...)
 {
 	WCHAR buf[256] = { 0 };
 	va_list args;
@@ -25,7 +25,7 @@ void Utils::AlertErrorW(const wchar_t* msg, ...)
 	AlertW(MB_OK | MB_ICONSTOP, buf);
 }
 
-void Utils::AlertErrorA(const char* msg, ...)
+void CapNetUtils::AlertErrorA(const char* msg, ...)
 {
 	CHAR buf[256] = { 0 };
 	va_list args;
@@ -35,7 +35,7 @@ void Utils::AlertErrorA(const char* msg, ...)
 	AlertA(MB_OK | MB_ICONSTOP, buf);
 }
 
-void Utils::AlertWarningW(const wchar_t* msg, ...)
+void CapNetUtils::AlertWarningW(const wchar_t* msg, ...)
 {
 	WCHAR buf[256] = { 0 };
 	va_list args;
@@ -45,7 +45,7 @@ void Utils::AlertWarningW(const wchar_t* msg, ...)
 	AlertW(MB_OK | MB_ICONWARNING, buf);
 }
 
-void Utils::AlertWarningA(const char* msg, ...)
+void CapNetUtils::AlertWarningA(const char* msg, ...)
 {
 	CHAR buf[256] = { 0 };
 	va_list args;
@@ -55,7 +55,7 @@ void Utils::AlertWarningA(const char* msg, ...)
 	AlertA(MB_OK | MB_ICONWARNING, buf);
 }
 
-void Utils::AlertInfoW(const wchar_t* msg, ...)
+void CapNetUtils::AlertInfoW(const wchar_t* msg, ...)
 {
 	WCHAR buf[256] = { 0 };
 	va_list args;
@@ -65,7 +65,7 @@ void Utils::AlertInfoW(const wchar_t* msg, ...)
 	AlertW(MB_OK | MB_ICONINFORMATION, buf);
 }
 
-void Utils::AlertInfoA(const char* msg, ...)
+void CapNetUtils::AlertInfoA(const char* msg, ...)
 {
 	CHAR buf[256] = { 0 };
 	va_list args;
@@ -75,7 +75,7 @@ void Utils::AlertInfoA(const char* msg, ...)
 	AlertA(MB_OK | MB_ICONINFORMATION, buf);
 }
 
-int Utils::AlertQueW(const wchar_t* msg, ...)
+int CapNetUtils::AlertQueW(const wchar_t* msg, ...)
 {
 	WCHAR buf[256] = { 0 };
 	va_list args;
@@ -85,7 +85,7 @@ int Utils::AlertQueW(const wchar_t* msg, ...)
 	return AlertW(MB_YESNO | MB_ICONQUESTION, buf);
 }
 
-int Utils::AlertQueA(const char* msg, ...)
+int CapNetUtils::AlertQueA(const char* msg, ...)
 {
 	CHAR buf[256] = { 0 };
 	va_list args;

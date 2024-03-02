@@ -24,7 +24,7 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Utils.h">
+    <ClInclude Include="CapNetUtils.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
@@ -56,7 +56,7 @@
     <ClCompile Include="CapNetGUIDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Utils.cpp">
+    <ClCompile Include="CapNetUtils.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CapNetPackPoolListCtrl.cpp">

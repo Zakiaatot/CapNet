@@ -1,7 +1,7 @@
 #include "CapNetListenButton.h"
 #include "CapNetPackPoolListCtrl.h"
 #include "CapNetGUIDlg.h"
-#include "Utils.h"
+#include "CapNetUtils.h"
 #include "resource.h"
 
 BEGIN_MESSAGE_MAP(CapNetListenButton, CMFCButton)
@@ -15,11 +15,19 @@ VOID CapNetListenButton::Init()
 
 VOID CapNetListenButton::ListeningStyle()
 {
+	pApp_->m_devSelector.EnableWindow(0);
+	pApp_->m_pacType.EnableWindow(0);
+	pApp_->m_ipEdit.EnableWindow(0);
+	isListening_ = TRUE;
 	SetWindowTextW(L"取消监听");
 }
 
 VOID CapNetListenButton::UnlisteningStyle()
 {
+	pApp_->m_devSelector.EnableWindow(1);
+	pApp_->m_pacType.EnableWindow(1);
+	pApp_->m_ipEdit.EnableWindow(1);
+	isListening_ = FALSE;
 	SetWindowTextW(L"开始监听");
 }
 
@@ -32,14 +40,13 @@ VOID CapNetListenButton::OnLButtonUp(UINT nFlags, CPoint point)
 
 		Singleton<CapNetCore>::Instance().EndListen();
 		UnlisteningStyle();
-		isListening_ = FALSE;
 	}
 	else
 	{
 		int num = 0;
 		if (pApp_->m_pacPool.GetItemCount() > 0)
 		{
-			num = Utils::AlertQueW(L"确认清空并开始新的监听？");
+			num = CapNetUtils::AlertQueW(L"确认清空并开始新的监听？");
 			if (num == 7)
 			{
 				EnableWindow(1);
@@ -52,27 +59,29 @@ VOID CapNetListenButton::OnLButtonUp(UINT nFlags, CPoint point)
 		pApp_->m_ipEdit.GetWindowTextW(ip);
 		if (ip.GetLength() > 0 && !CapNetIpEdit::CheckIpAddressW(ip.GetString()))
 		{
-			Utils::AlertErrorW(L"请检查指定IP地址格式");
+			CapNetUtils::AlertErrorW(L"请检查指定IP地址格式");
 			EnableWindow(1);
 			return;
 		}
+		CString type;
+		int i = pApp_->m_pacType.GetCurSel();
+		pApp_->m_pacType.GetLBText(i, type);
 
 		auto res = Singleton<CapNetCore>::Instance().BeginListen
 		(
 			pApp_->m_devSelector.GetCurSel(),
-			L"eth",
-			L"",
+			type.GetString(),
+			ip.GetString(),
 			CapNetPackPoolListCtrl::ListenPackLoop,
 			CapNetPackPoolListCtrl::ListenPackEnd
 		);
 		if (res)
 		{
-			isListening_ = TRUE;
 			ListeningStyle();
 		}
 		else
 		{
-			Utils::AlertErrorA(res.msg.c_str());
+			CapNetUtils::AlertErrorA(res.msg.c_str());
 		};
 	}
 	EnableWindow(1);

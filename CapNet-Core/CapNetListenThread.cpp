@@ -1,7 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <time.h>
 #include <atlstr.h>
-#include "Parse.h"
+#include "CapNetParse.h"
 #include "CapNetListenThread.h"
 
 
@@ -9,8 +9,8 @@
 CapNetListenThread::CapNetListenThread
 (
 	pcap_t* adhandle,
-	const WCHAR* type,
-	const WCHAR* ip,
+	std::wstring  type,
+	std::wstring  ip,
 	CapNetCore::LISTEN_CALLBACK_FUNC pCallback,
 	CapNetCore::LISTEN_END_CALLBACK_FUNC pEndCallback
 ) :
@@ -38,7 +38,6 @@ VOID CapNetListenThread::Kill()
 	Wait();
 }
 
-
 void CapNetListenThread::Run()
 {
 	isRunning_ = TRUE;
@@ -60,6 +59,13 @@ void CapNetListenThread::Run()
 			/* Timeout elapsed */
 			continue;
 
+		// ¹ýÂË
+		if ((ip_.length() > 0 && !CapNetParse::CompareIpW(pkt_data, ip_.c_str())) ||
+			(!CapNetParse::CompareProtocolW(pkt_data, type_.c_str())))
+		{
+			continue;
+		}
+
 		packMap_[i] = std::make_pair(header, pkt_data);
 
 		/* convert the timestamp to readable format */
@@ -70,18 +76,20 @@ void CapNetListenThread::Run()
 		CHAR* p = &timestr[strlen(timestr)];
 		wsprintfA(p, "%.6d", header->ts.tv_usec);
 
+
 		CapNetCore::Pack pack = { 0 };
 		pack.no = i;
 		CA2W ca2w(timestr);
 		pack.time = std::wstring(ca2w);
 		pack.length = header->len;
 
-		auto sd = Parse::GetSourceDestIp(pkt_data);
+		auto sd = CapNetParse::GetSourceDestIp(pkt_data);
 		pack.source = sd.first;
 		pack.dest = sd.second;
 
-		auto protocolAndInfo = Parse::GetProtocolAndInfo(pkt_data);
+		auto protocolAndInfo = CapNetParse::GetProtocolAndInfo(pkt_data);
 		pack.protocol = protocolAndInfo.first;
+
 		pack.info = protocolAndInfo.second;
 		if (pCallback_)
 			pCallback_(pack);

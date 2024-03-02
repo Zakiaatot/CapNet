@@ -13,5 +13,6 @@ VOID CapNetPacTypeComboBox::Init()
 	AddString(L"udp");
 	AddString(L"icmp");
 	AddString(L"http");
+	AddString(L"https");
 	SetCurSel(0);
 }

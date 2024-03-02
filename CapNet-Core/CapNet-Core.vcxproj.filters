@@ -27,7 +27,10 @@
     <ClCompile Include="CapNetListenThread.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Parse.cpp">
+    <ClCompile Include="CapNetParse.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CapNetStream.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,10 +44,13 @@
     <ClInclude Include="CapNetListenThread.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Parse.h">
+    <ClInclude Include="CapNetParse.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="NetProtocol.h">
+    <ClInclude Include="CapNetProtocol.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CapNetStream.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

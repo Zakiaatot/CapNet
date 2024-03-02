@@ -155,16 +155,18 @@
   <ItemGroup>
     <ClCompile Include="CapNetCore.cpp" />
     <ClCompile Include="CapNetListenThread.cpp" />
+    <ClCompile Include="CapNetStream.cpp" />
     <ClCompile Include="CapNetThread.cpp" />
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="Parse.cpp" />
+    <ClCompile Include="CapNetParse.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CapNetCore.h" />
     <ClInclude Include="CapNetListenThread.h" />
+    <ClInclude Include="CapNetStream.h" />
     <ClInclude Include="CapNetThread.h" />
-    <ClInclude Include="NetProtocol.h" />
-    <ClInclude Include="Parse.h" />
+    <ClInclude Include="CapNetProtocol.h" />
+    <ClInclude Include="CapNetParse.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

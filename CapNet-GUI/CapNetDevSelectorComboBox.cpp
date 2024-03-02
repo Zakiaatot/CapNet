@@ -1,7 +1,7 @@
 #define _WIN32_WINNT_MAXVER
 #include "CapNetDevSelectorComboBox.h"
 #include "CapNetGUIDlg.h"
-#include "Utils.h"
+#include "CapNetUtils.h"
 
 BEGIN_MESSAGE_MAP(CapNetDevSelectorComboBox, CComboBox)
 
@@ -12,13 +12,13 @@ VOID CapNetDevSelectorComboBox::Init()
 	CapNetCore::StatusVoid init = Singleton<CapNetCore>::Instance().Init();
 	if (!init)
 	{
-		Utils::AlertErrorA(init.msg.c_str());
+		CapNetUtils::AlertErrorA(init.msg.c_str());
 		pApp_->Exit();
 	}
 	auto ret = Singleton<CapNetCore>::Instance().FindAllDev();
 	if (!ret)
 	{
-		Utils::AlertErrorA(ret.msg.c_str());
+		CapNetUtils::AlertErrorA(ret.msg.c_str());
 		pApp_->Exit();
 	}
 	else

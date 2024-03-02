@@ -4,7 +4,6 @@
 #include "CapNetGUI.h"
 #include "CapNetGUIDlg.h"
 #include "CapNet-Core/CapNetCore.h"
-#include "Utils.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

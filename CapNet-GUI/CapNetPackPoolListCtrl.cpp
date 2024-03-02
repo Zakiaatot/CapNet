@@ -1,5 +1,5 @@
 #include "CapNetPackPoolListCtrl.h"
-#include "Utils.h"
+#include "CapNetUtils.h"
 
 static CapNetPackPoolListCtrl* gPackPoolListCtrl = NULL;
 
@@ -48,7 +48,7 @@ VOID CapNetPackPoolListCtrl::ListenPackEnd(std::wstring& msg)
 {
 	if (!gPackPoolListCtrl)
 		return;
-	Utils::AlertErrorW(msg.c_str());
+	CapNetUtils::AlertErrorW(msg.c_str());
 }
 
 

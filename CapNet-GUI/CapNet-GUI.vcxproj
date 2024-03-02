@@ -197,7 +197,7 @@
     <ClInclude Include="CapNetPacTypeComboBox.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Utils.h" />
+    <ClInclude Include="CapNetUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CapNetDevSelectorComboBox.cpp" />
@@ -207,7 +207,7 @@
     <ClCompile Include="CapNetListenButton.cpp" />
     <ClCompile Include="CapNetPackPoolListCtrl.cpp" />
     <ClCompile Include="CapNetPacTypeComboBox.cpp" />
-    <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="CapNetUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CapNetGUI.rc" />

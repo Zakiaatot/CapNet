@@ -1,10 +1,10 @@
-#ifndef _PARSE_H_
-#define _PARSE_H_
+#ifndef _CAPNET_PARSE_H_
+#define _CAPNET_PARSE_H_
 
 #include <Windows.h>
 #include <string>
 
-namespace Parse
+namespace CapNetParse
 {
 	BOOL IsIpv6(const UCHAR* data);
 	BOOL IsIpv4(const UCHAR* data);
@@ -20,8 +20,11 @@ namespace Parse
 	std::wstring GetUdpInfo(const UCHAR* data);
 	std::wstring GetIcmpInfo(const UCHAR* data);
 	std::wstring GetIpv4Info(const UCHAR* data);
+	std::wstring GetEtherInfo(const UCHAR* data);
+	BOOL CompareProtocolW(const UCHAR* data, const WCHAR* protocol);
+	BOOL CompareIpW(const UCHAR* data, const WCHAR* ip);
 }
 
-#endif // ! _PARSE_H_
+#endif // ! _CAPNET_PARSE_H_
 
 
