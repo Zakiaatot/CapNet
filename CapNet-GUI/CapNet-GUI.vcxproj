@@ -187,7 +187,9 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CapNetAboutDlg.h" />
     <ClInclude Include="CapNetCommon.h" />
+    <ClInclude Include="CapNetDetailDlg.h" />
     <ClInclude Include="CapNetDevSelectorComboBox.h" />
     <ClInclude Include="CapNetGUI.h" />
     <ClInclude Include="CapNetGUIDlg.h" />
@@ -201,6 +203,8 @@
     <ClInclude Include="CapNetUtils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CapNetAboutDlg.cpp" />
+    <ClCompile Include="CapNetDetailDlg.cpp" />
     <ClCompile Include="CapNetDevSelectorComboBox.cpp" />
     <ClCompile Include="CapNetGUI.cpp" />
     <ClCompile Include="CapNetGUIDlg.cpp" />

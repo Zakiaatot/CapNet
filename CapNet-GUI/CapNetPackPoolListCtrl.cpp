@@ -1,11 +1,16 @@
 #include "CapNetPackPoolListCtrl.h"
 #include "CapNetUtils.h"
+#include "CapNetDetailDlg.h"
+#include "resource.h"
 
 static CapNetPackPoolListCtrl* gPackPoolListCtrl = NULL;
 
 BEGIN_MESSAGE_MAP(CapNetPackPoolListCtrl, CListCtrl)
 	ON_WM_NCCALCSIZE()
 	ON_NOTIFY_REFLECT(NM_CLICK, OnNMClick)
+	ON_NOTIFY_REFLECT(NM_RCLICK, OnNMRClick)
+	ON_NOTIFY_REFLECT(NM_DBLCLK, OnNMDBLClick)
+	ON_COMMAND(ID_32773, &CapNetPackPoolListCtrl::OnClickPacDetail)
 END_MESSAGE_MAP()
 
 
@@ -24,6 +29,16 @@ VOID CapNetPackPoolListCtrl::Init()
 	InsertColumn(6, _T("Info"), LVCFMT_LEFT, rect.Width() - 60 - 200 - 200 - 200 - 110 - 100, 6);
 
 	gPackPoolListCtrl = this;
+
+	//获得原有风格
+	DWORD dwStyle = ::GetWindowLong(m_hWnd, GWL_STYLE);
+	dwStyle &= ~(LVS_TYPEMASK);
+	dwStyle &= ~(LVS_EDITLABELS);
+	//设置新风格
+	SetWindowLong(m_hWnd, GWL_STYLE, dwStyle | LVS_REPORT | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS);
+	//设置扩展风格
+	DWORD styles = LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES;
+	ListView_SetExtendedListViewStyleEx(m_hWnd, styles, styles);
 }
 
 VOID CapNetPackPoolListCtrl::ListenPackLoop(CapNetCore::Pack& pack)
@@ -63,7 +78,48 @@ VOID CapNetPackPoolListCtrl::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAM
 void CapNetPackPoolListCtrl::OnNMClick(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-	// TODO: 在此添加控件通知处理程序代码
-	SetItemState(pNMItemActivate->iItem, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
+	int t = pNMItemActivate->iItem;
+	if (t < 0)
+	{
+		LVHITTESTINFO tHitTest{};
+		tHitTest.pt = pNMItemActivate->ptAction;
+		t = SendMessage(LVM_SUBITEMHITTEST, 0, reinterpret_cast<LPARAM>(&tHitTest));
+	}
+	int nItem = GetNextItem(-1, LVNI_SELECTED); //表示获取上一次被设置点中的某项；
+	if (nItem >= 0 && nItem != t)
+		SetItemState(nItem, 0, -1);//0表示不被选中，-1表示不高亮；
+	SetItemState(t, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
 	*pResult = 0;
+}
+
+
+void CapNetPackPoolListCtrl::OnNMRClick(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
+	if (pNMListView->iItem != -1)
+	{
+		DWORD dwPos = GetMessagePos();
+		CPoint point(LOWORD(dwPos), HIWORD(dwPos));
+		CMenu menu;
+		//添加线程操作
+		VERIFY(menu.LoadMenu(IDR_MENU1));			//这里是我们在1中定义的MENU的文件名称
+		CMenu* popup = menu.GetSubMenu(0);
+		ASSERT(popup != NULL);
+		popup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+	}
+	*pResult = 0;
+}
+
+VOID CapNetPackPoolListCtrl::OnNMDBLClick(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	CapNetDetailDlg detailWin;
+	detailWin.DoModal();
+}
+
+
+VOID CapNetPackPoolListCtrl::OnClickPacDetail()
+{
+	CapNetDetailDlg detailWin;
+	detailWin.DoModal();
 }

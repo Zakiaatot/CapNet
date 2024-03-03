@@ -1,44 +1,22 @@
-﻿#define _WIN32_WINNT_MAXVER
-#include <afxdialogex.h>
+﻿#include <afxdialogex.h>
 #include <afxbutton.h>
 #include "CapNetGUI.h"
 #include "CapNetGUIDlg.h"
+#include "CapNetAboutDlg.h"
 #include "CapNet-Core/CapNetCore.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-// 用于应用程序“关于”菜单项的 CAboutDlg 对话框
-class CAboutDlg : public CDialogEx
-{
-public:
-	CAboutDlg();
+CCapNetGUIDlg* CCapNetGUIDlg::m_pInstance = NULL;
 
-	// 对话框数据
-#ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_ABOUTBOX };
-#endif
-
-protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
-
-	// 实现
-protected:
-	DECLARE_MESSAGE_MAP()
-};
-CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
-{
-}
-void CAboutDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialogEx::DoDataExchange(pDX);
-}
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CCapNetGUIDlg, CDialogEx)
+	ON_WM_SYSCOMMAND()
+	ON_WM_PAINT()
+	ON_WM_QUERYDRAGICON()
 END_MESSAGE_MAP()
 
-
-// CCapNetGUIDlg 对话框
 CCapNetGUIDlg::CCapNetGUIDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_CAPNETGUI_DIALOG, pParent),
 	m_pacPool(this),
@@ -49,23 +27,29 @@ CCapNetGUIDlg::CCapNetGUIDlg(CWnd* pParent /*=nullptr*/)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDI_ICON2);
 }
+
+HWND CCapNetGUIDlg::GetHwnd()
+{
+	if (m_pInstance)
+	{
+		return m_pInstance->GetSafeHwnd();
+	}
+	return 0;
+}
+
 void CCapNetGUIDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_COMBO1, m_devSelector);
 	DDX_Control(pDX, IDC_EDIT1, m_ruleEdit);
 	DDX_Control(pDX, IDC_LIST3, m_pacPool);
-	DDX_Control(pDX, IDC_MFCBUTTON1, m_listenButton);
+	DDX_Control(pDX, IDC_BUTTON2, m_listenButton);
 	DDX_Control(pDX, IDC_TEXT, m_info);
 }
-BEGIN_MESSAGE_MAP(CCapNetGUIDlg, CDialogEx)
-	ON_WM_SYSCOMMAND()
-	ON_WM_PAINT()
-	ON_WM_QUERYDRAGICON()
-END_MESSAGE_MAP()
-// CCapNetGUIDlg 消息处理程序
+
 BOOL CCapNetGUIDlg::OnInitDialog()
 {
+	m_pInstance = this;
 	CDialogEx::OnInitDialog();
 
 	// 将“关于...”菜单项添加到系统菜单中。
@@ -91,7 +75,7 @@ BOOL CCapNetGUIDlg::OnInitDialog()
 	// 设置此对话框的图标。  当应用程序主窗口不是对话框时，框架将自动
 	//  执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
-	SetIcon(m_hIcon, FALSE);		// 设置小图标
+	//SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	//ShowWindow(SW_MINIMIZE);
 
@@ -108,11 +92,12 @@ BOOL CCapNetGUIDlg::OnInitDialog()
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
+
 void CCapNetGUIDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
 	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
 	{
-		CAboutDlg dlgAbout;
+		CapNetAboutDlg dlgAbout;
 		dlgAbout.DoModal();
 	}
 	else

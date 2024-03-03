@@ -1,17 +1,17 @@
+#include "CapNetGUIDlg.h"
 #include <Windows.h>
 #include <atlstr.h>
 #include "CapNetUtils.h"
 
 
-
 static INT AlertW(UINT option, const wchar_t* msg)
 {
-	return MessageBoxW(NULL, msg, L"CapNet-GUI", option);
+	return MessageBoxW(CCapNetGUIDlg::GetHwnd(), msg, L"CapNet-GUI", option | MB_APPLMODAL);
 }
 
 static INT AlertA(UINT option, const char* msg)
 {
-	return MessageBoxA(NULL, msg, "CapNet-GUI", option);
+	return MessageBoxA(CCapNetGUIDlg::GetHwnd(), msg, "CapNet-GUI", option | MB_APPLMODAL);
 }
 
 

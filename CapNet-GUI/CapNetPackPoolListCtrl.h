@@ -16,10 +16,10 @@ public:
 protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg VOID OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS FAR* lpncsp);
-private:
-
-public:
-	afx_msg void OnNMClick(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg VOID OnNMClick(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg VOID OnNMRClick(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg VOID OnNMDBLClick(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg VOID  OnClickPacDetail();
 };
 #endif // !_CAPNET_PACKPOOL_LISTCTRL_H_
 

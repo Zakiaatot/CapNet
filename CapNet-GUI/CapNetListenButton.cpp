@@ -3,13 +3,13 @@
 #include "CapNetGUIDlg.h"
 #include "CapNetUtils.h"
 
-BEGIN_MESSAGE_MAP(CapNetListenButton, CMFCButton)
+BEGIN_MESSAGE_MAP(CapNetListenButton, CButton)
 	ON_WM_LBUTTONUP()
 END_MESSAGE_MAP()
 
 VOID CapNetListenButton::Init()
 {
-	CMFCButton::SetMouseCursorHand();
+	//CMFCButton::SetMouseCursorHand();
 }
 
 VOID CapNetListenButton::ListeningStyle()
@@ -18,6 +18,7 @@ VOID CapNetListenButton::ListeningStyle()
 	isListening_ = TRUE;
 	SetWindowTextW(L"取消监听");
 	pApp_->m_info.SuccessW(L"开始监听");
+	pApp_->m_pacPool.SetFocus();
 }
 
 VOID CapNetListenButton::UnlisteningStyle()

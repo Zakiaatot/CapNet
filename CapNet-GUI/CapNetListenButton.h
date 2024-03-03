@@ -6,7 +6,7 @@
 #include "CapNet-Core/CapNetCore.h"
 
 
-class CapNetListenButton :public CMFCButton, public CapNetCommon
+class CapNetListenButton :public CButton, public CapNetCommon
 {
 public:
 	explicit CapNetListenButton(CCapNetGUIDlg* pApp)

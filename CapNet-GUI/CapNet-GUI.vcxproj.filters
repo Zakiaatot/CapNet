@@ -51,6 +51,12 @@
     <ClInclude Include="CapNetStream.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CapNetAboutDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CapNetDetailDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CapNetGUI.cpp">
@@ -78,6 +84,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CapNetStream.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CapNetAboutDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CapNetDetailDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

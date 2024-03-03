@@ -16,6 +16,7 @@ public:
 #endif
 protected:
 	HICON m_hIcon;
+	static CCapNetGUIDlg* m_pInstance;
 	virtual void DoDataExchange(CDataExchange* pDX);
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
@@ -25,12 +26,14 @@ protected:
 public:
 	CCapNetGUIDlg(CWnd* pParent = nullptr);
 	void Exit() { CDialogEx::OnCancel(); };
+	static HWND GetHwnd();
 
 	CapNetPackPoolListCtrl m_pacPool;
 	CapNetListenButton m_listenButton;
 	CapNetDevSelectorComboBox m_devSelector;
 	CapNetRuleEdit m_ruleEdit;
 	CapNetInfo m_info;
+
 };
 #endif // !_CAPNET_GUI_DLG_H_
 
