@@ -72,12 +72,12 @@ public:
 	StatusVoid BeginListen // 开始监听
 	(
 		INT devId,
-		std::wstring type,
-		std::wstring  ip,
+		std::wstring  rule,
 		LISTEN_CALLBACK_FUNC pCallback,
 		LISTEN_END_CALLBACK_FUNC pEndCallback
 	);
 	StatusVoid EndListen(); // 结束监听
+	StatusVoid SetFilter(std::wstring rule); // 设置过滤器
 private:
 	CapNetCore() = default;
 	~CapNetCore() = default;

@@ -3,10 +3,10 @@
 
 #include <afxdialogex.h>
 #include "CapNetPackPoolListCtrl.h"
-#include "CapNetPacTypeComboBox.h"
 #include "CapNetDevSelectorComboBox.h"
-#include "CapNetIpEdit.h"
+#include "CapNetRuleEdit.h"
 #include "CapNetListenButton.h"
+#include "CapNetInfo.h"
 
 class CCapNetGUIDlg : public CDialogEx
 {
@@ -27,10 +27,10 @@ public:
 	void Exit() { CDialogEx::OnCancel(); };
 
 	CapNetPackPoolListCtrl m_pacPool;
-	CapNetPacTypeComboBox m_pacType;
 	CapNetListenButton m_listenButton;
 	CapNetDevSelectorComboBox m_devSelector;
-	CapNetIpEdit m_ipEdit;
+	CapNetRuleEdit m_ruleEdit;
+	CapNetInfo m_info;
 };
 #endif // !_CAPNET_GUI_DLG_H_
 

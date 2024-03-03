@@ -42,10 +42,10 @@ END_MESSAGE_MAP()
 CCapNetGUIDlg::CCapNetGUIDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_CAPNETGUI_DIALOG, pParent),
 	m_pacPool(this),
-	m_pacType(this),
 	m_devSelector(this),
-	m_ipEdit(this),
-	m_listenButton(this)
+	m_ruleEdit(this),
+	m_listenButton(this),
+	m_info(this)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDI_ICON2);
 }
@@ -53,10 +53,10 @@ void CCapNetGUIDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_COMBO1, m_devSelector);
-	DDX_Control(pDX, IDC_EDIT1, m_ipEdit);
+	DDX_Control(pDX, IDC_EDIT1, m_ruleEdit);
 	DDX_Control(pDX, IDC_LIST3, m_pacPool);
-	DDX_Control(pDX, IDC_COMBO2, m_pacType);
 	DDX_Control(pDX, IDC_MFCBUTTON1, m_listenButton);
+	DDX_Control(pDX, IDC_TEXT, m_info);
 }
 BEGIN_MESSAGE_MAP(CCapNetGUIDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
@@ -97,12 +97,14 @@ BOOL CCapNetGUIDlg::OnInitDialog()
 
 	// Dev Select
 	m_devSelector.Init();
-	// Pac Type
-	m_pacType.Init();
 	// Pac Pool
 	m_pacPool.Init();
 	// Listen Button
 	m_listenButton.Init();
+	// Rule Edit
+	m_ruleEdit.Init();
+	// Info
+	m_info.Init();
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }

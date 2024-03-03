@@ -9,8 +9,6 @@
 CapNetListenThread::CapNetListenThread
 (
 	pcap_t* adhandle,
-	std::wstring  type,
-	std::wstring  ip,
 	CapNetCore::LISTEN_CALLBACK_FUNC pCallback,
 	CapNetCore::LISTEN_END_CALLBACK_FUNC pEndCallback
 ) :
@@ -18,8 +16,6 @@ CapNetListenThread::CapNetListenThread
 	adhandle_(adhandle),
 	isRunning_(FALSE),
 	errMsg_(),
-	type_(type),
-	ip_(ip),
 	pCallback_(pCallback),
 	pEndCallback_(pEndCallback),
 	packMap_()
@@ -58,13 +54,6 @@ void CapNetListenThread::Run()
 		if (res == 0)
 			/* Timeout elapsed */
 			continue;
-
-		// ¹ýÂË
-		if ((ip_.length() > 0 && !CapNetParse::CompareIpW(pkt_data, ip_.c_str())) ||
-			(!CapNetParse::CompareProtocolW(pkt_data, type_.c_str())))
-		{
-			continue;
-		}
 
 		packMap_[i] = std::make_pair(header, pkt_data);
 

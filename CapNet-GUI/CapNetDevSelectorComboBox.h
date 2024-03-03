@@ -14,6 +14,7 @@ public:
 protected:
 	DECLARE_MESSAGE_MAP()
 private:
+	afx_msg VOID  OnSelectedChange();
 };
 
 #endif // !_CAPNET_DEVSELECTOR_COMBOBOX_H_

@@ -14,6 +14,7 @@ public:
 		isListening_(FALSE)
 	{};
 	VOID Init();
+	BOOL GetListenStatus() const { return isListening_; };
 protected:
 	DECLARE_MESSAGE_MAP()
 private:

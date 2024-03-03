@@ -1,10 +1,9 @@
-#define _WIN32_WINNT_MAXVER
 #include "CapNetDevSelectorComboBox.h"
 #include "CapNetGUIDlg.h"
 #include "CapNetUtils.h"
 
 BEGIN_MESSAGE_MAP(CapNetDevSelectorComboBox, CComboBox)
-
+	ON_CONTROL_REFLECT(CBN_SELCHANGE, OnSelectedChange)
 END_MESSAGE_MAP()
 
 VOID CapNetDevSelectorComboBox::Init()
@@ -31,4 +30,11 @@ VOID CapNetDevSelectorComboBox::Init()
 		}
 		SetCurSel(0);
 	}
+}
+
+VOID CapNetDevSelectorComboBox::OnSelectedChange()
+{
+	CString devName;
+	GetLBText(GetCurSel(), devName);
+	pApp_->m_info.InfoW(L"已选择设备 %s", devName.GetString());
 }

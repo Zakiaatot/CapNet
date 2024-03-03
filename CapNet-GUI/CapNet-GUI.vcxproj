@@ -191,10 +191,11 @@
     <ClInclude Include="CapNetDevSelectorComboBox.h" />
     <ClInclude Include="CapNetGUI.h" />
     <ClInclude Include="CapNetGUIDlg.h" />
-    <ClInclude Include="CapNetIpEdit.h" />
+    <ClInclude Include="CapNetInfo.h" />
+    <ClInclude Include="CapNetRuleEdit.h" />
     <ClInclude Include="CapNetListenButton.h" />
     <ClInclude Include="CapNetPackPoolListCtrl.h" />
-    <ClInclude Include="CapNetPacTypeComboBox.h" />
+    <ClInclude Include="CapNetStream.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="CapNetUtils.h" />
@@ -203,10 +204,11 @@
     <ClCompile Include="CapNetDevSelectorComboBox.cpp" />
     <ClCompile Include="CapNetGUI.cpp" />
     <ClCompile Include="CapNetGUIDlg.cpp" />
-    <ClCompile Include="CapNetIpEdit.cpp" />
+    <ClCompile Include="CapNetInfo.cpp" />
+    <ClCompile Include="CapNetRuleEdit.cpp" />
     <ClCompile Include="CapNetListenButton.cpp" />
     <ClCompile Include="CapNetPackPoolListCtrl.cpp" />
-    <ClCompile Include="CapNetPacTypeComboBox.cpp" />
+    <ClCompile Include="CapNetStream.cpp" />
     <ClCompile Include="CapNetUtils.cpp" />
   </ItemGroup>
   <ItemGroup>

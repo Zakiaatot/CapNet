@@ -2,6 +2,7 @@
 
 #define DLLEXPORT
 #include <map>
+#include <atlstr.h>
 #include <pcap.h>
 #include "CapNetCore.h"
 #include "CapNetListenThread.h"
@@ -83,8 +84,7 @@ CapNetCore::StatusVoid CapNetCore::FreeAllDev()
 CapNetCore::StatusVoid CapNetCore::BeginListen
 (
 	INT devId,
-	std::wstring type,
-	std::wstring ip,
+	std::wstring rule,
 	CapNetCore::LISTEN_CALLBACK_FUNC pCallback,
 	CapNetCore::LISTEN_END_CALLBACK_FUNC pEndCallback
 )
@@ -126,8 +126,12 @@ CapNetCore::StatusVoid CapNetCore::BeginListen
 	{
 		return StatusVoid::Err("[CapNetCore] Unable to open the adapter. %s is not supported by Npcap.", dev->description);
 	}
+	// ÉèÖÃ¹ýÂË
+	auto res = SetFilter(rule);
+	if (!res)
+		return res;
 
-	pListenThread_ = new CapNetListenThread(gAdhandle, type, ip, pCallback, pEndCallback);
+	pListenThread_ = new CapNetListenThread(gAdhandle, pCallback, pEndCallback);
 	if (!pListenThread_->Start())
 	{
 		delete pListenThread_;
@@ -148,4 +152,28 @@ CapNetCore::StatusVoid CapNetCore::EndListen()
 	pListenThread_ = NULL;
 
 	return StatusVoid();
+}
+
+CapNetCore::StatusVoid CapNetCore::SetFilter(std::wstring rule)
+{
+	if (!gInit)
+	{
+		return StatusVoid::Err("[CapNetCore] Not Init");
+	}
+	if (!gAdhandle)
+	{
+		return StatusVoid::Err("[CapNetCore] Not open dev yet");
+	}
+	int res = 0;
+	struct bpf_program fcode;
+	CW2A c2wa(rule.c_str());
+	if ((res = pcap_compile(gAdhandle, &fcode, c2wa, 1, PCAP_NETMASK_UNKNOWN)) < 0)
+	{
+		return StatusVoid::Err("[CapNetCore] Error compiling filter: %s\n", pcap_statustostr(res));
+	}
+	if ((res = pcap_setfilter(gAdhandle, &fcode)) < 0)
+	{
+		return StatusVoid::Err("[CapNetCore] Error setting the filter: %s\n", pcap_statustostr(res));
+	}
+	return StatusVoid::Ok();
 }

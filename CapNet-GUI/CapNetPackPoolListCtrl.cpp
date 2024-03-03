@@ -5,6 +5,7 @@ static CapNetPackPoolListCtrl* gPackPoolListCtrl = NULL;
 
 BEGIN_MESSAGE_MAP(CapNetPackPoolListCtrl, CListCtrl)
 	ON_WM_NCCALCSIZE()
+	ON_NOTIFY_REFLECT(NM_CLICK, OnNMClick)
 END_MESSAGE_MAP()
 
 
@@ -20,7 +21,7 @@ VOID CapNetPackPoolListCtrl::Init()
 	InsertColumn(3, _T("Destination"), LVCFMT_LEFT, 200, 3);
 	InsertColumn(4, _T("Protocol"), LVCFMT_LEFT, 110, 4);
 	InsertColumn(5, _T("Length"), LVCFMT_LEFT, 100, 5);
-	InsertColumn(6, _T("Info"), LVCFMT_LEFT, rect.Width() - 60 - 200 * 3 - 110 - 100, 6);
+	InsertColumn(6, _T("Info"), LVCFMT_LEFT, rect.Width() - 60 - 200 - 200 - 200 - 110 - 100, 6);
 
 	gPackPoolListCtrl = this;
 }
@@ -56,4 +57,13 @@ VOID CapNetPackPoolListCtrl::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAM
 {
 	ModifyStyle(WS_HSCROLL, 0, 0);
 	CListCtrl::OnNcCalcSize(bCalcValidRects, lpncsp);
+}
+
+
+void CapNetPackPoolListCtrl::OnNMClick(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: 在此添加控件通知处理程序代码
+	SetItemState(pNMItemActivate->iItem, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
+	*pResult = 0;
 }

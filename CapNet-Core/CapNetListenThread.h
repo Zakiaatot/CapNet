@@ -13,8 +13,6 @@ public:
 	explicit CapNetListenThread
 	(
 		pcap_t* adhandle,
-		std::wstring  type,
-		std::wstring  ip,
 		CapNetCore::LISTEN_CALLBACK_FUNC pCallback,
 		CapNetCore::LISTEN_END_CALLBACK_FUNC pEndCallback
 	);
@@ -26,8 +24,6 @@ private:
 	pcap_t* adhandle_;
 	BOOL isRunning_;
 	std::wstring errMsg_;
-	std::wstring type_;
-	std::wstring  ip_;
 	CapNetCore::LISTEN_CALLBACK_FUNC pCallback_;
 	CapNetCore::LISTEN_END_CALLBACK_FUNC pEndCallback_;
 	std::map <UINT, std::pair<pcap_pkthdr*, const UCHAR*>> packMap_;

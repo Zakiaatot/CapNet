@@ -2,7 +2,6 @@
 #include "CapNetPackPoolListCtrl.h"
 #include "CapNetGUIDlg.h"
 #include "CapNetUtils.h"
-#include "resource.h"
 
 BEGIN_MESSAGE_MAP(CapNetListenButton, CMFCButton)
 	ON_WM_LBUTTONUP()
@@ -16,19 +15,17 @@ VOID CapNetListenButton::Init()
 VOID CapNetListenButton::ListeningStyle()
 {
 	pApp_->m_devSelector.EnableWindow(0);
-	pApp_->m_pacType.EnableWindow(0);
-	pApp_->m_ipEdit.EnableWindow(0);
 	isListening_ = TRUE;
 	SetWindowTextW(L"取消监听");
+	pApp_->m_info.SuccessW(L"开始监听");
 }
 
 VOID CapNetListenButton::UnlisteningStyle()
 {
 	pApp_->m_devSelector.EnableWindow(1);
-	pApp_->m_pacType.EnableWindow(1);
-	pApp_->m_ipEdit.EnableWindow(1);
 	isListening_ = FALSE;
 	SetWindowTextW(L"开始监听");
+	pApp_->m_info.SuccessW(L"取消监听");
 }
 
 VOID CapNetListenButton::OnLButtonUp(UINT nFlags, CPoint point)
@@ -55,23 +52,13 @@ VOID CapNetListenButton::OnLButtonUp(UINT nFlags, CPoint point)
 		}
 		pApp_->m_pacPool.DeleteAllItems();
 		pApp_->m_pacPool.SetItemCount(0);
-		CString ip;
-		pApp_->m_ipEdit.GetWindowTextW(ip);
-		if (ip.GetLength() > 0 && !CapNetIpEdit::CheckIpAddressW(ip.GetString()))
-		{
-			CapNetUtils::AlertErrorW(L"请检查指定IP地址格式");
-			EnableWindow(1);
-			return;
-		}
-		CString type;
-		int i = pApp_->m_pacType.GetCurSel();
-		pApp_->m_pacType.GetLBText(i, type);
+		CString rule;
+		pApp_->m_ruleEdit.GetWindowTextW(rule);
 
 		auto res = Singleton<CapNetCore>::Instance().BeginListen
 		(
 			pApp_->m_devSelector.GetCurSel(),
-			type.GetString(),
-			ip.GetString(),
+			rule.GetString(),
 			CapNetPackPoolListCtrl::ListenPackLoop,
 			CapNetPackPoolListCtrl::ListenPackEnd
 		);
