@@ -30,7 +30,7 @@ VOID CapNetDetailRawDataPool::Init()
 	//设置新风格
 	SetWindowLong(m_hWnd, GWL_STYLE, dwStyle | LVS_REPORT | LVS_NOLABELWRAP | LVS_SHOWSELALWAYS);
 	//设置扩展风格
-	DWORD styles = LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES;
+	DWORD styles = LVS_EX_GRIDLINES;
 	ListView_SetExtendedListViewStyleEx(m_hWnd, styles, styles);
 
 	// Get Raw Data

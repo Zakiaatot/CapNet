@@ -3,6 +3,7 @@
 
 #include <afxdialogex.h>
 #include "CapNetDetailRawDataPool.h"
+#include "CapNetDetailStringData.h"
 
 class CapNetDetailDlg : public CDialogEx
 {
@@ -18,6 +19,7 @@ public:
 	enum { IDD = IDD_ABOUTBOX };
 #endif
 	CapNetDetailRawDataPool m_rawDataPool;
+	CapNetDetailStringData m_stringData;
 	UINT m_packId;
 };
 

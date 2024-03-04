@@ -89,11 +89,20 @@ BOOL CapNetParse::IsHttp(const UCHAR* data)
 	const tcp_header* tcpHeader = (tcp_header*)(data + 14 + 20);
 	if (ntohs(tcpHeader->DestPort) == 80 || ntohs(tcpHeader->SourPort) == 80)
 	{
-		return TRUE;
+		const char* http = (const char*)(data + 14 + 20 + 20);
+		const std::vector<std::string> httpMethods =
+		{
+			"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "TRACE", "CONNECT", "PATCH"
+		};
+
+		for (const std::string& method : httpMethods) {
+			if (strstr(http, method.c_str()) != nullptr) {
+				return TRUE;
+			}
+		}
 	}
 	return FALSE;
 }
-
 BOOL CapNetParse::IsHttps(const UCHAR* data)
 {
 	if (!IsTcp(data))
@@ -119,13 +128,14 @@ std::pair<std::wstring, std::wstring> CapNetParse::GetProtocolAndInfo(const UCHA
 			{
 				// http
 				protocol = L"Http";
-				info = L"To do";
+				info = GetHttpInfo(data);
 			}
 			else if (IsHttps(data))
 			{
 				// https
 				protocol = L"Https";
-				info = L"To do";
+				//info = L"To do";
+				info = GetTcpInfo(data);
 			}
 			else
 			{
@@ -156,12 +166,14 @@ std::pair<std::wstring, std::wstring> CapNetParse::GetProtocolAndInfo(const UCHA
 	{
 		// ipv6
 		protocol = L"Ipv6";
-		info = L"Unsopport yet";
+		//info = L"Unsopport yet";
+		info = GetEtherInfo(data);
 	}
 	else if (IsArp(data))
 	{
 		protocol = L"Arp";
-		info = L"Unsopport yet";
+		//info = L"Unsopport yet";
+		info = GetEtherInfo(data);
 	}
 	else
 	{
@@ -329,6 +341,16 @@ std::wstring CapNetParse::GetEtherInfo(const UCHAR* data)
 			ether_src[0], ether_src[1], ether_src[2], ether_src[3], ether_src[4], ether_src[5])
 		<< CapNetOutStreamW::Format(L" 目标MAC地址: %02X:%02X:%02X:%02X:%02X:%02X ",
 			ether_dst[0], ether_dst[1], ether_dst[2], ether_dst[3], ether_dst[4], ether_dst[5]);
+	return owss;
+}
+
+std::wstring CapNetParse::GetHttpInfo(const UCHAR* data)
+{
+	http_header* httpProtocol = { 0 };
+	// +14 跳过数据链路层 +20 跳过IP层 +20 跳过TCP
+	httpProtocol = (http_header*)(data + 14 + 20 + 20);
+	CapNetOutStreamW owss;
+	owss << httpProtocol->url;
 	return owss;
 }
 

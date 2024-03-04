@@ -191,6 +191,7 @@
     <ClInclude Include="CapNetCommon.h" />
     <ClInclude Include="CapNetDetailDlg.h" />
     <ClInclude Include="CapNetDetailRawDataPool.h" />
+    <ClInclude Include="CapNetDetailStringData.h" />
     <ClInclude Include="CapNetDevSelector.h" />
     <ClInclude Include="CapNetGUI.h" />
     <ClInclude Include="CapNetGUIDlg.h" />
@@ -207,6 +208,7 @@
     <ClCompile Include="CapNetAboutDlg.cpp" />
     <ClCompile Include="CapNetDetailDlg.cpp" />
     <ClCompile Include="CapNetDetailRawDataPool.cpp" />
+    <ClCompile Include="CapNetDetailStringData.cpp" />
     <ClCompile Include="CapNetDevSelector.cpp" />
     <ClCompile Include="CapNetGUI.cpp" />
     <ClCompile Include="CapNetGUIDlg.cpp" />

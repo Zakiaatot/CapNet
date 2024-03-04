@@ -21,6 +21,7 @@ namespace CapNetParse
 	std::wstring GetIcmpInfo(const UCHAR* data);
 	std::wstring GetIpv4Info(const UCHAR* data);
 	std::wstring GetEtherInfo(const UCHAR* data);
+	std::wstring GetHttpInfo(const UCHAR* data);
 	BOOL CompareProtocolW(const UCHAR* data, const WCHAR* protocol);
 	BOOL CompareIpW(const UCHAR* data, const WCHAR* ip);
 }

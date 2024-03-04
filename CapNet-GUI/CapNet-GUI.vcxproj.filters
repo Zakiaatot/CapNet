@@ -60,6 +60,9 @@
     <ClInclude Include="CapNetDetailRawDataPool.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CapNetDetailStringData.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CapNetGUI.cpp">
@@ -96,6 +99,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CapNetDetailRawDataPool.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CapNetDetailStringData.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

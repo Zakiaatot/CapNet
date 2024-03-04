@@ -73,5 +73,10 @@ typedef struct icmp_header {
 	uint16_t send_time;      // ´«ÊäÊ±¼ä´Á
 }icmp_header;
 
+typedef struct http_header
+{
+	char url[512];
+}http_header;
+
 #endif // !_CAPNET_PROTOCOL_H_
 
