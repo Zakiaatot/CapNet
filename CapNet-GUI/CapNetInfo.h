@@ -5,7 +5,9 @@
 #include "CapNetCommon.h"
 #include "CapNet-Core/CapNetCore.h"
 
-class CapNetInfo :public CStatic, public CapNetCommon
+class CCapNetGUIDlg;
+
+class CapNetInfo :public CStatic, public CapNetCommon<CCapNetGUIDlg>
 {
 public:
 	explicit CapNetInfo(CCapNetGUIDlg* pApp) :CapNetCommon(pApp) {};

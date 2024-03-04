@@ -5,8 +5,9 @@
 #include "CapNetCommon.h"
 #include "CapNet-Core/CapNetCore.h"
 
+class CCapNetGUIDlg;
 
-class CapNetRuleEdit :public CEdit, public CapNetCommon
+class CapNetRuleEdit :public CEdit, public CapNetCommon< CCapNetGUIDlg>
 {
 public:
 	explicit CapNetRuleEdit(CCapNetGUIDlg* pApp) :CapNetCommon(pApp) {};

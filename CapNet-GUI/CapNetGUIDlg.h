@@ -2,8 +2,8 @@
 #define _CAPNET_GUI_DLG_H_
 
 #include <afxdialogex.h>
-#include "CapNetPackPoolListCtrl.h"
-#include "CapNetDevSelectorComboBox.h"
+#include "CapNetPackPool.h"
+#include "CapNetDevSelector.h"
 #include "CapNetRuleEdit.h"
 #include "CapNetListenButton.h"
 #include "CapNetInfo.h"

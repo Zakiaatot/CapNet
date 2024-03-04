@@ -1,15 +1,31 @@
 #include "CapNetDetailDlg.h"
+#include "CapNetStream.h"
 #include "resource.h"
 
 BEGIN_MESSAGE_MAP(CapNetDetailDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
-CapNetDetailDlg::CapNetDetailDlg() : CDialogEx(IDD_DETAIL_DIALOG)
+CapNetDetailDlg::CapNetDetailDlg(UINT packId)
+	:
+	CDialogEx(IDD_DETAIL_DIALOG),
+	m_packId(packId),
+	m_rawDataPool(this)
 {
 }
 
 void CapNetDetailDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_LIST1, m_rawDataPool);
+}
+
+BOOL CapNetDetailDlg::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+	CapNetOutStreamW woss;
+	woss << woss.Format(L"No.%d ±¨ÎÄÏêÇé", m_packId);
+	SetWindowTextW(woss.str().c_str());
+	m_rawDataPool.Init();
+	return TRUE;
 }

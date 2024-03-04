@@ -2,6 +2,7 @@
 #define _CAPNET_STREAM_H_
 
 #include <sstream>
+#include <iomanip> 
 
 class CapNetOutStreamA :public std::ostringstream
 {

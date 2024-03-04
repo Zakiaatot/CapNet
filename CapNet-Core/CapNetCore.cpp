@@ -147,9 +147,10 @@ CapNetCore::StatusVoid CapNetCore::EndListen()
 	if (pListenThread_)
 	{
 		pListenThread_->Kill();
+		pListenThread_->isRunning_ = FALSE;
 	}
-	delete pListenThread_;
-	pListenThread_ = NULL;
+	//delete pListenThread_;
+	//pListenThread_ = NULL;
 
 	return StatusVoid();
 }
@@ -176,4 +177,18 @@ CapNetCore::StatusVoid CapNetCore::SetFilter(std::wstring rule)
 		return StatusVoid::Err("[CapNetCore] Error setting the filter: %s\n", pcap_statustostr(res));
 	}
 	return StatusVoid::Ok();
+}
+
+CapNetCore::Status<std::vector<BYTE>> CapNetCore::GetRawData(UINT pacId)
+{
+	if (!gInit)
+	{
+		return Status<std::vector<BYTE>>::Err("[CapNetCore] Not Init");
+	}
+	if (!pListenThread_)
+	{
+		return Status<std::vector<BYTE>>::Err("[CapNetCore] Please Capture Pack First");
+	}
+
+	return Status<std::vector<BYTE>>::Ok(pListenThread_->GetRawData(pacId));
 }

@@ -1,9 +1,10 @@
-#include "CapNetPackPoolListCtrl.h"
+#include "CapNetPackPool.h"
 #include "CapNetUtils.h"
 #include "CapNetDetailDlg.h"
 #include "resource.h"
 
 static CapNetPackPoolListCtrl* gPackPoolListCtrl = NULL;
+static UINT gRClickIndex = 0;
 
 BEGIN_MESSAGE_MAP(CapNetPackPoolListCtrl, CListCtrl)
 	ON_WM_NCCALCSIZE()
@@ -85,6 +86,8 @@ void CapNetPackPoolListCtrl::OnNMClick(NMHDR* pNMHDR, LRESULT* pResult)
 		tHitTest.pt = pNMItemActivate->ptAction;
 		t = SendMessage(LVM_SUBITEMHITTEST, 0, reinterpret_cast<LPARAM>(&tHitTest));
 	}
+	if (t == -1)
+		return;
 	int nItem = GetNextItem(-1, LVNI_SELECTED); //表示获取上一次被设置点中的某项；
 	if (nItem >= 0 && nItem != t)
 		SetItemState(nItem, 0, -1);//0表示不被选中，-1表示不高亮；
@@ -97,6 +100,15 @@ void CapNetPackPoolListCtrl::OnNMRClick(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
+	int t = pNMItemActivate->iItem;
+	if (t < 0)
+	{
+		LVHITTESTINFO tHitTest{};
+		tHitTest.pt = pNMItemActivate->ptAction;
+		t = SendMessage(LVM_SUBITEMHITTEST, 0, reinterpret_cast<LPARAM>(&tHitTest));
+	}
+	if (t == -1)
+		return;
 	if (pNMListView->iItem != -1)
 	{
 		DWORD dwPos = GetMessagePos();
@@ -104,6 +116,7 @@ void CapNetPackPoolListCtrl::OnNMRClick(NMHDR* pNMHDR, LRESULT* pResult)
 		CMenu menu;
 		//添加线程操作
 		VERIFY(menu.LoadMenu(IDR_MENU1));			//这里是我们在1中定义的MENU的文件名称
+		gRClickIndex = t;
 		CMenu* popup = menu.GetSubMenu(0);
 		ASSERT(popup != NULL);
 		popup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
@@ -113,13 +126,23 @@ void CapNetPackPoolListCtrl::OnNMRClick(NMHDR* pNMHDR, LRESULT* pResult)
 
 VOID CapNetPackPoolListCtrl::OnNMDBLClick(NMHDR* pNMHDR, LRESULT* pResult)
 {
-	CapNetDetailDlg detailWin;
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	int t = pNMItemActivate->iItem;
+	if (t < 0)
+	{
+		LVHITTESTINFO tHitTest{};
+		tHitTest.pt = pNMItemActivate->ptAction;
+		t = SendMessage(LVM_SUBITEMHITTEST, 0, reinterpret_cast<LPARAM>(&tHitTest));
+	}
+	if (t == -1)
+		return;
+	CapNetDetailDlg detailWin(t);
 	detailWin.DoModal();
 }
 
 
 VOID CapNetPackPoolListCtrl::OnClickPacDetail()
 {
-	CapNetDetailDlg detailWin;
+	CapNetDetailDlg detailWin(gRClickIndex);
 	detailWin.DoModal();
 }

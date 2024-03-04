@@ -34,6 +34,11 @@ VOID CapNetListenThread::Kill()
 	Wait();
 }
 
+std::vector<BYTE> CapNetListenThread::GetRawData(UINT pacId)
+{
+	return  packMap_[pacId].second;
+}
+
 void CapNetListenThread::Run()
 {
 	isRunning_ = TRUE;
@@ -55,7 +60,12 @@ void CapNetListenThread::Run()
 			/* Timeout elapsed */
 			continue;
 
-		packMap_[i] = std::make_pair(header, pkt_data);
+		std::vector<BYTE> rawData;
+		for (int i = 0; i < header->caplen; i++)
+		{
+			rawData.push_back(pkt_data[i]);
+		}
+		packMap_[i] = std::make_pair(*header, rawData);
 
 		/* convert the timestamp to readable format */
 		local_tv_sec = header->ts.tv_sec;
@@ -70,7 +80,7 @@ void CapNetListenThread::Run()
 		pack.no = i;
 		CA2W ca2w(timestr);
 		pack.time = std::wstring(ca2w);
-		pack.length = header->len;
+		pack.length = header->caplen;
 
 		auto sd = CapNetParse::GetSourceDestIp(pkt_data);
 		pack.source = sd.first;

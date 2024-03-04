@@ -30,13 +30,13 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CapNetPackPoolListCtrl.h">
+    <ClInclude Include="CapNetPackPool.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CapNetCommon.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CapNetDevSelectorComboBox.h">
+    <ClInclude Include="CapNetDevSelector.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CapNetRuleEdit.h">
@@ -57,6 +57,9 @@
     <ClInclude Include="CapNetDetailDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CapNetDetailRawDataPool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CapNetGUI.cpp">
@@ -68,10 +71,10 @@
     <ClCompile Include="CapNetUtils.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CapNetPackPoolListCtrl.cpp">
+    <ClCompile Include="CapNetPackPool.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CapNetDevSelectorComboBox.cpp">
+    <ClCompile Include="CapNetDevSelector.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CapNetRuleEdit.cpp">
@@ -90,6 +93,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CapNetDetailDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CapNetDetailRawDataPool.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

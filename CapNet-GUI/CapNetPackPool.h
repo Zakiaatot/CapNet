@@ -1,12 +1,13 @@
-#ifndef _CAPNET_PACKPOOL_LISTCTRL_H_
-#define _CAPNET_PACKPOOL_LISTCTRL_H_
+#ifndef _CAPNET_PACKPOOL_H_
+#define _CAPNET_PACKPOOL_H_
 
 #include <afxcmn.h>
 #include "CapNetCommon.h"
 #include "CapNet-Core/CapNetCore.h"
 
+class CCapNetGUIDlg;
 
-class CapNetPackPoolListCtrl :public CListCtrl, public CapNetCommon
+class CapNetPackPoolListCtrl :public CListCtrl, public CapNetCommon<CCapNetGUIDlg>
 {
 public:
 	explicit CapNetPackPoolListCtrl(CCapNetGUIDlg* pApp) :CapNetCommon(pApp) {};
@@ -21,6 +22,6 @@ protected:
 	afx_msg VOID OnNMDBLClick(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg VOID  OnClickPacDetail();
 };
-#endif // !_CAPNET_PACKPOOL_LISTCTRL_H_
+#endif // !_CAPNET_PACKPOOL_H_
 
 

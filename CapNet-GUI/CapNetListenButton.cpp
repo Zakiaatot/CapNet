@@ -1,5 +1,5 @@
 #include "CapNetListenButton.h"
-#include "CapNetPackPoolListCtrl.h"
+#include "CapNetPackPool.h"
 #include "CapNetGUIDlg.h"
 #include "CapNetUtils.h"
 

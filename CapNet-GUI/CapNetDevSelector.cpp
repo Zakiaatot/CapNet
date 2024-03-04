@@ -1,4 +1,4 @@
-#include "CapNetDevSelectorComboBox.h"
+#include "CapNetDevSelector.h"
 #include "CapNetGUIDlg.h"
 #include "CapNetUtils.h"
 

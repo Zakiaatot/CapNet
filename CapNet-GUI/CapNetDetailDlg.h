@@ -2,19 +2,23 @@
 #define _CAPNET_DETAIL_DLG_H_
 
 #include <afxdialogex.h>
+#include "CapNetDetailRawDataPool.h"
 
 class CapNetDetailDlg : public CDialogEx
 {
+protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+	virtual BOOL OnInitDialog(); // Init Hook
+protected:
+	DECLARE_MESSAGE_MAP()
 public:
-	CapNetDetailDlg();
+	CapNetDetailDlg(UINT pacId);
+	VOID Exit() { CDialogEx::OnCancel(); };
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_ABOUTBOX };
 #endif
-
-protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
-protected:
-	DECLARE_MESSAGE_MAP()
+	CapNetDetailRawDataPool m_rawDataPool;
+	UINT m_packId;
 };
 
 

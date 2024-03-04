@@ -1,17 +1,16 @@
 #ifndef _CAPNET_COMMON_H_
 #define _CAPNET_COMMON_H_
 
-class CCapNetGUIDlg;
-
+template <typename T>
 class CapNetCommon
 {
 public:
-	explicit CapNetCommon(CCapNetGUIDlg* pApp) :pApp_(pApp) {};
+	explicit CapNetCommon(T* pApp) :pApp_(pApp) {};
 	virtual ~CapNetCommon() = default;
 
 	virtual void Init() = 0;
 protected:
-	CCapNetGUIDlg* pApp_;
+	T* pApp_;
 	CapNetCommon(const CapNetCommon&) = delete;
 	CapNetCommon(const CapNetCommon&&) = delete;
 	CapNetCommon& operator=(const CapNetCommon&) = delete;

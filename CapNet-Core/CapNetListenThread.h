@@ -4,6 +4,7 @@
 #include <pcap.h>
 #include <string>
 #include <map>
+#include <vector>
 #include "CapNetCore.h"
 #include "CapNetThread.h"
 
@@ -19,15 +20,17 @@ public:
 	~CapNetListenThread();
 	BOOL Running() const { return isRunning_; }
 	VOID Kill();
+	std::vector<BYTE>  GetRawData(UINT pacId);
 private:
 	BOOL kill_;
 	pcap_t* adhandle_;
-	BOOL isRunning_;
 	std::wstring errMsg_;
 	CapNetCore::LISTEN_CALLBACK_FUNC pCallback_;
 	CapNetCore::LISTEN_END_CALLBACK_FUNC pEndCallback_;
-	std::map <UINT, std::pair<pcap_pkthdr*, const UCHAR*>> packMap_;
+	std::map <UINT, std::pair<pcap_pkthdr, std::vector<BYTE>>> packMap_;
 	void Run();
+public:
+	BOOL isRunning_;
 };
 
 #endif // !_CAPNET_LISTEN_THREAD_H_

@@ -37,11 +37,11 @@ public:
 	template <typename T>
 	struct Status
 	{
-		BOOL success;
+		BOOL success = FALSE;
 		std::string msg;
-		T ret;
+		T ret{};
 		operator bool() { return success == TRUE; };
-		bool operator!() { return !bool(this); };
+		bool operator!() { return success == FALSE; };
 		static Status Ok(T res = 0) { return { TRUE,"",res }; };
 		static Status Err(const char* msg, ...) {
 			CHAR buf[128];
@@ -78,6 +78,7 @@ public:
 	);
 	StatusVoid EndListen(); // 结束监听
 	StatusVoid SetFilter(std::wstring rule); // 设置过滤器
+	Status<std::vector<BYTE>> GetRawData(UINT pacId); // 获取原始包数据
 private:
 	CapNetCore() = default;
 	~CapNetCore() = default;
