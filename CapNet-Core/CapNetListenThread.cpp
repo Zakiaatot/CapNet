@@ -43,7 +43,7 @@ void CapNetListenThread::Run()
 {
 	isRunning_ = TRUE;
 	/* Retrieve the packets */
-	int res = 0;
+	INT res = 0;
 	pcap_pkthdr* header = NULL;
 	const UCHAR* pkt_data;
 	time_t local_tv_sec;
@@ -61,7 +61,7 @@ void CapNetListenThread::Run()
 			continue;
 
 		std::vector<BYTE> rawData;
-		for (int i = 0; i < header->caplen; i++)
+		for (INT i = 0; i < (INT)header->caplen; i++)
 		{
 			rawData.push_back(pkt_data[i]);
 		}

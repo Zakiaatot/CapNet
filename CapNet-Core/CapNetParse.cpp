@@ -9,8 +9,8 @@
 
 BOOL CapNetParse::IsIpv6(const UCHAR* data)
 {
-	ether_header* ethHdr = (ether_header*)data;
-	USHORT ethType = ntohs(ethHdr->ether_type);
+	EtherHeader* ethHdr = (EtherHeader*)data;
+	USHORT ethType = ntohs(ethHdr->etherType);
 	if (ethType == 0x86DD)
 		return TRUE;
 	else
@@ -19,8 +19,8 @@ BOOL CapNetParse::IsIpv6(const UCHAR* data)
 
 BOOL CapNetParse::IsIpv4(const UCHAR* data)
 {
-	ether_header* ethHdr = (ether_header*)data;
-	USHORT ethType = ntohs(ethHdr->ether_type);
+	EtherHeader* ethHdr = (EtherHeader*)data;
+	USHORT ethType = ntohs(ethHdr->etherType);
 	if (ethType == 0x0800)
 		return TRUE;
 	else
@@ -31,13 +31,13 @@ BOOL CapNetParse::IsUdp(const UCHAR* data)
 {
 	if (IsIpv4(data))
 	{
-		ip_header* iph = (ip_header*)(data + 14);
-		return iph->Protocol == 0x11;
+		IpHeader* iph = (IpHeader*)(data + 14);
+		return iph->protocol == 0x11;
 	}
 	if (IsIpv6(data))
 	{
-		ipv6_header* iph = (ipv6_header*)(data + 14);
-		return iph->next_header == 0x11;
+		Ipv6Header* iph = (Ipv6Header*)(data + 14);
+		return iph->nextHeader == 0x11;
 	}
 	return FALSE;
 }
@@ -46,13 +46,13 @@ BOOL CapNetParse::IsTcp(const UCHAR* data)
 {
 	if (IsIpv4(data))
 	{
-		ip_header* iph = (ip_header*)(data + 14);
-		return iph->Protocol == 0x06;
+		IpHeader* iph = (IpHeader*)(data + 14);
+		return iph->protocol == 0x06;
 	}
 	if (IsIpv6(data))
 	{
-		ipv6_header* iph = (ipv6_header*)(data + 14);
-		return iph->next_header == 0x06;
+		Ipv6Header* iph = (Ipv6Header*)(data + 14);
+		return iph->nextHeader == 0x06;
 	}
 	return FALSE;
 }
@@ -61,21 +61,21 @@ BOOL CapNetParse::IsIcmp(const UCHAR* data)
 {
 	if (IsIpv4(data))
 	{
-		ip_header* iph = (ip_header*)(data + 14);
-		return iph->Protocol == 0x01;
+		IpHeader* iph = (IpHeader*)(data + 14);
+		return iph->protocol == 0x01;
 	}
 	if (IsIpv6(data))
 	{
-		ipv6_header* iph = (ipv6_header*)(data + 14);
-		return iph->next_header == 0x01;
+		Ipv6Header* iph = (Ipv6Header*)(data + 14);
+		return iph->nextHeader == 0x01;
 	}
 	return FALSE;
 }
 
 BOOL CapNetParse::IsArp(const UCHAR* data)
 {
-	ether_header* ethHdr = (ether_header*)data;
-	USHORT ethType = ntohs(ethHdr->ether_type);
+	EtherHeader* ethHdr = (EtherHeader*)data;
+	USHORT ethType = ntohs(ethHdr->etherType);
 	if (ethType == 0x0806)
 		return TRUE;
 	else
@@ -86,8 +86,8 @@ BOOL CapNetParse::IsHttp(const UCHAR* data)
 {
 	if (!IsTcp(data))
 		return FALSE;
-	const tcp_header* tcpHeader = (tcp_header*)(data + 14 + 20);
-	if (ntohs(tcpHeader->DestPort) == 80 || ntohs(tcpHeader->SourPort) == 80)
+	const TcpHeader* tcpHeader = (const TcpHeader*)(data + 14 + 20);
+	if (ntohs(tcpHeader->destPort) == 80 || ntohs(tcpHeader->sourPort) == 80)
 	{
 		const char* http = (const char*)(data + 14 + 20 + 20);
 		const std::vector<std::string> httpMethods =
@@ -103,12 +103,13 @@ BOOL CapNetParse::IsHttp(const UCHAR* data)
 	}
 	return FALSE;
 }
+
 BOOL CapNetParse::IsHttps(const UCHAR* data)
 {
 	if (!IsTcp(data))
 		return FALSE;
-	const tcp_header* tcpHeader = (tcp_header*)(data + 14 + 20);
-	if (ntohs(tcpHeader->DestPort) == 443 || ntohs(tcpHeader->SourPort) == 443)
+	const TcpHeader* tcpHeader = (TcpHeader*)(data + 14 + 20);
+	if (ntohs(tcpHeader->destPort) == 443 || ntohs(tcpHeader->sourPort) == 443)
 	{
 		return TRUE;
 	}
@@ -173,7 +174,7 @@ std::pair<std::wstring, std::wstring> CapNetParse::GetProtocolAndInfo(const UCHA
 	{
 		protocol = L"Arp";
 		//info = L"Unsopport yet";
-		info = GetEtherInfo(data);
+		info = GetArpInfo(data);
 	}
 	else
 	{
@@ -187,17 +188,17 @@ std::pair<std::wstring, std::wstring> CapNetParse::GetProtocolAndInfo(const UCHA
 std::pair<std::wstring, std::wstring> CapNetParse::GetSourceDestIp(const UCHAR* data)
 {
 	if (IsIpv4(data)) {
-		ip_header* iph = (ip_header*)(data + 14);
+		IpHeader* iph = (IpHeader*)(data + 14);
 
-		SOCKADDR_IN Src_Addr, Dst_Addr = { 0 };
-		Src_Addr.sin_addr.s_addr = iph->SrcAddr;
-		Dst_Addr.sin_addr.s_addr = iph->DstAddr;
+		SOCKADDR_IN srcAddr, dstAddr = { 0 };
+		srcAddr.sin_addr.s_addr = iph->srcAddr;
+		dstAddr.sin_addr.s_addr = iph->dstAddr;
 
 		CHAR strSaddr[INET_ADDRSTRLEN];
-		inet_ntop(AF_INET, &(Src_Addr.sin_addr), strSaddr, INET_ADDRSTRLEN);
+		inet_ntop(AF_INET, &(srcAddr.sin_addr), strSaddr, INET_ADDRSTRLEN);
 
 		CHAR strDaddr[INET_ADDRSTRLEN];
-		inet_ntop(AF_INET, &(Dst_Addr.sin_addr), strDaddr, INET_ADDRSTRLEN);
+		inet_ntop(AF_INET, &(dstAddr.sin_addr), strDaddr, INET_ADDRSTRLEN);
 
 		CA2W ca2w1(strSaddr);
 		CA2W ca2w2(strDaddr);
@@ -205,7 +206,7 @@ std::pair<std::wstring, std::wstring> CapNetParse::GetSourceDestIp(const UCHAR* 
 	}
 	else if (IsIpv6(data))
 	{
-		ipv6_header* iph = (ipv6_header*)(data + 14);
+		Ipv6Header* iph = (Ipv6Header*)(data + 14);
 		CHAR strSaddr[INET6_ADDRSTRLEN] = { 0 };
 		inet_ntop(AF_INET6, &iph->saddr, strSaddr, INET6_ADDRSTRLEN);
 
@@ -222,14 +223,12 @@ std::pair<std::wstring, std::wstring> CapNetParse::GetSourceDestIp(const UCHAR* 
 
 std::wstring CapNetParse::GetTcpInfo(const UCHAR* data)
 {
-	struct tcp_header* tcp_protocol;
-	// +14 跳过数据链路层 +20 跳过IP层
-	tcp_protocol = (struct tcp_header*)(data + 14 + 20);
-
-	USHORT sport = ntohs(tcp_protocol->SourPort);
-	USHORT dport = ntohs(tcp_protocol->DestPort);
-	USHORT window = tcp_protocol->WindowSize;
-	int flags = tcp_protocol->flags;
+	TcpHeader* tcpHdr;
+	tcpHdr = (TcpHeader*)(data + 14 + 20);
+	USHORT sport = ntohs(tcpHdr->sourPort);
+	USHORT dport = ntohs(tcpHdr->destPort);
+	USHORT window = tcpHdr->windowSize;
+	INT flags = tcpHdr->flags;
 
 	CapNetOutStreamW owss;
 	owss << L"源端口:" << sport
@@ -250,37 +249,35 @@ std::wstring CapNetParse::GetTcpInfo(const UCHAR* data)
 
 std::wstring CapNetParse::GetUdpInfo(const UCHAR* data)
 {
-	struct udp_header* udp_protocol;
-	// +14 跳过数据链路层 +20 跳过IP层
-	udp_protocol = (struct udp_header*)(data + 14 + 20);
+	UdpHeader* udpHdr;
+	udpHdr = (UdpHeader*)(data + 14 + 20);
 
-	u_short sport = ntohs(udp_protocol->sport);
-	u_short dport = ntohs(udp_protocol->dport);
-	u_short datalen = ntohs(udp_protocol->datalen);
+	USHORT sport = ntohs(udpHdr->sport);
+	USHORT dport = ntohs(udpHdr->dport);
+	USHORT dataLen = ntohs(udpHdr->dataLen);
 
 	CapNetOutStreamW owss;
 	owss << L"源端口:" << sport
 		<< L" 目标端口:" << dport
-		<< L" 大小:" << datalen;
+		<< L" 大小:" << dataLen;
 	return owss;
 }
 
 std::wstring CapNetParse::GetIcmpInfo(const UCHAR* data)
 {
-	struct icmp_header* icmp_protocol;
-	// +14 跳过数据链路层 +20 跳过IP层
-	icmp_protocol = (struct icmp_header*)(data + 14 + 20);
+	IcmpHeader* icmpHdr;
+	icmpHdr = (struct IcmpHeader*)(data + 14 + 20);
 
-	int type = icmp_protocol->type;
-	int init_time = icmp_protocol->init_time;
-	int send_time = icmp_protocol->send_time;
-	int recv_time = icmp_protocol->recv_time;
+	INT type = icmpHdr->type;
+	INT initTime = icmpHdr->initTime;
+	INT sendTime = icmpHdr->sendTime;
+	INT recvTime = icmpHdr->recvTime;
 	CapNetOutStreamW owss;
 	if (type == 8)
 	{
-		owss << L"发起时间戳:" << init_time
-			<< L" 传输时间戳:" << send_time
-			<< L" 接收时间戳:" << recv_time
+		owss << L"发起时间戳:" << initTime
+			<< L" 传输时间戳:" << sendTime
+			<< L" 接收时间戳:" << recvTime
 			<< L" 方向:";
 
 		switch (type)
@@ -295,26 +292,23 @@ std::wstring CapNetParse::GetIcmpInfo(const UCHAR* data)
 
 std::wstring CapNetParse::GetIpv4Info(const UCHAR* data)
 {
-	struct ip_header* ip_protocol;
+	IpHeader* iph;
+	iph = (IpHeader*)(data + 14);
+	SOCKADDR_IN srcAddr = { 0 }, dstAddr = { 0 };
 
-	// +14 跳过数据链路层
-	ip_protocol = (struct ip_header*)(data + 14);
-	SOCKADDR_IN Src_Addr = { 0 }, Dst_Addr = { 0 };
+	USHORT checkSum = ntohs(iph->checkSum);
+	UINT ttl = iph->timeToLive;
+	INT proto = iph->protocol;
 
-	u_short check_sum = ntohs(ip_protocol->check_sum);
-	UINT ttl = ip_protocol->time_to_live;
-	int proto = ip_protocol->Protocol;
-
-	Src_Addr.sin_addr.s_addr = ip_protocol->SrcAddr;
-	Dst_Addr.sin_addr.s_addr = ip_protocol->DstAddr;
+	srcAddr.sin_addr.s_addr = iph->srcAddr;
+	dstAddr.sin_addr.s_addr = iph->dstAddr;
 
 	CapNetOutStreamW owss;
 
-
-	owss << L"校验和:" << std::hex << check_sum
+	owss << L"校验和:" << std::hex << checkSum
 		<< L" TTL:" << std::dec << ttl
 		<< L" 协议类型:";
-	switch (ip_protocol->Protocol)
+	switch (iph->protocol)
 	{
 	case 1: owss << L"ICMP"; break;
 	case 2: owss << L"IGMP"; break;
@@ -328,30 +322,66 @@ std::wstring CapNetParse::GetIpv4Info(const UCHAR* data)
 
 std::wstring CapNetParse::GetEtherInfo(const UCHAR* data)
 {
-	struct ether_header* eth_protocol;
-	eth_protocol = (struct ether_header*)data;
+	EtherHeader* ethHdr;
+	ethHdr = (EtherHeader*)data;
 
-	u_short ether_type = ntohs(eth_protocol->ether_type);  // 以太网类型
-	u_char* ether_src = eth_protocol->ether_shost;         // 以太网原始MAC地址
-	u_char* ether_dst = eth_protocol->ether_dhost;         // 以太网目标MAC地址
+	USHORT etherType = ntohs(ethHdr->etherType);  // 以太网类型
+	u_char* etherSrc = ethHdr->etherSHost;         // 以太网原始MAC地址
+	u_char* etherDst = ethHdr->etherDHost;         // 以太网目标MAC地址
 
 	CapNetOutStreamW owss;
-	owss << L"类型:0x" << std::hex << ether_type
+	owss << L"类型:0x" << std::hex << etherType
 		<< CapNetOutStreamW::Format(L" 原MAC地址: %02X:%02X:%02X:%02X:%02X:%02X ",
-			ether_src[0], ether_src[1], ether_src[2], ether_src[3], ether_src[4], ether_src[5])
+			etherSrc[0], etherSrc[1], etherSrc[2], etherSrc[3], etherSrc[4], etherSrc[5])
 		<< CapNetOutStreamW::Format(L" 目标MAC地址: %02X:%02X:%02X:%02X:%02X:%02X ",
-			ether_dst[0], ether_dst[1], ether_dst[2], ether_dst[3], ether_dst[4], ether_dst[5]);
+			etherDst[0], etherDst[1], etherDst[2], etherDst[3], etherDst[4], etherDst[5]);
 	return owss;
 }
 
 std::wstring CapNetParse::GetHttpInfo(const UCHAR* data)
 {
-	http_header* httpProtocol = { 0 };
+	HttpHeader* httpProtocol = { 0 };
 	// +14 跳过数据链路层 +20 跳过IP层 +20 跳过TCP
-	httpProtocol = (http_header*)(data + 14 + 20 + 20);
+	httpProtocol = (HttpHeader*)(data + 14 + 20 + 20);
 	CapNetOutStreamW owss;
 	owss << httpProtocol->url;
 	return owss;
+}
+
+std::wstring CapNetParse::GetArpInfo(const UCHAR* data)
+{
+	ArpHeader* arpHdr;
+
+	arpHdr = (struct ArpHeader*)(data + 14);
+
+	USHORT hardwareType = ntohs(arpHdr->hardwareType);
+	USHORT protocolType = ntohs(arpHdr->protocolType);
+	INT hardwareLength = arpHdr->hardwareLength;
+	INT protocolLength = arpHdr->protocolLength;
+	USHORT operationCode = ntohs(arpHdr->operationCode);
+
+	// 判读是否为ARP请求包
+	CapNetOutStreamW woss;
+	if (hardwareLength == 6 && protocolLength == 4)
+	{
+		woss << L"原MAC地址:";
+		for (INT x = 0; x < 6; x++)
+			woss << woss.Format(L"%X:", arpHdr->sourceEthernetAddress[x]);
+
+		woss << L" 目标MAC地址:";
+		for (INT x = 0; x < 6; x++)
+			woss << woss.Format(L"%X:", arpHdr->destinationEthernetAddress[x]);
+
+		switch (operationCode)
+		{
+		case 1: woss << L" ARP 请求"; break;
+		case 2: woss << L"ARP 应答 "; break;
+		case 3: woss << L"RARP 请求 "; break;
+		case 4: woss << L"RARP 应答 "; break;
+		default: break;
+		}
+	}
+	return woss;
 }
 
 BOOL CapNetParse::CompareProtocolW(const UCHAR* data, const WCHAR* protocol)

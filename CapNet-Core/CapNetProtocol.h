@@ -2,81 +2,92 @@
 #define _CAPNET_PROTOCOL_H_
 #include <pcap.h>
 
-typedef struct ether_header {
-	u_char ether_dhost[6];    // 目标地址
-	u_char ether_shost[6];    // 源地址
-	u_short ether_type;       // 以太网类型
-} ether_header;
+typedef struct EtherHeader {
+	UCHAR etherDHost[6];    // 目标地址
+	UCHAR etherSHost[6];    // 源地址
+	USHORT etherType;       // 以太网类型
+} EtherHeader;
 
 
-typedef struct ip_header
+typedef struct IpHeader
 {
-	char version : 4;
-	char headerlength : 4;
-	char cTOS;
-	unsigned short totla_length;
-	unsigned short identification;
-	unsigned short flags_offset;
-	char time_to_live;
-	char Protocol;
-	unsigned short check_sum;
-	unsigned int SrcAddr;
-	unsigned int DstAddr;
-}ip_header;
+	CHAR version : 4;
+	CHAR headerLength : 4;
+	CHAR tos;
+	USHORT totlaLength;
+	USHORT identification;
+	USHORT flagsOffset;
+	CHAR timeToLive;
+	CHAR protocol;
+	USHORT checkSum;
+	UINT srcAddr;
+	UINT dstAddr;
+}IpHeader;
 
-typedef struct ipv6_header
+typedef struct Ipv6Header
 {
-	unsigned int
+	UINT
 		version : 4,
-		traffic_class : 8,
-		flow_label : 20;
-	uint16_t length;
-	uint8_t  next_header;
-	uint8_t  hop_limit;
+		trafficClass : 8,
+		flowLabel : 20;
+	USHORT length;
+	UCHAR  nextHeader;
+	UCHAR  hopLimit;
 	struct in6_addr saddr;
 	struct in6_addr daddr;
-} ipv6_header;
+} Ipv6Header;
 
 
-typedef struct tcp_header
+typedef struct TcpHeader
 {
-	short SourPort;                 // 源端口号16bit
-	short DestPort;                 // 目的端口号16bit
-	unsigned int SequNum;           // 序列号32bit
-	unsigned int AcknowledgeNum;    // 确认号32bit
-	unsigned char reserved : 4, offset : 4; // 预留偏移
-
-	unsigned char  flags;               // 标志 
-
-	short WindowSize;               // 窗口大小16bit
-	short CheckSum;                 // 检验和16bit
-	short surgentPointer;           // 紧急数据偏移量16bit
-}tcp_header;
+	SHORT sourPort;                 // 源端口号16bit
+	SHORT destPort;                 // 目的端口号16bit
+	UINT sequNum;           // 序列号32bit
+	UINT cknowledgeNum;    // 确认号32bit
+	UCHAR reserved : 4, offset : 4; // 预留偏移
+	UCHAR  flags;               // 标志 
+	SHORT windowSize;               // 窗口大小16bit
+	SHORT checkSum;                 // 检验和16bit
+	SHORT surgentPointer;           // 紧急数据偏移量16bit
+}TcpHeader;
 
 
-typedef struct udp_header {
-	uint32_t sport;   // 源端口
-	uint32_t dport;   // 目标端口
-	uint8_t zero;     // 保留位
-	uint8_t proto;    // 协议标识
-	uint16_t datalen; // UDP数据长度
-}udp_header;
+typedef struct UdpHeader {
+	UINT sport;   // 源端口
+	UINT dport;   // 目标端口
+	UCHAR zero;     // 保留位
+	UCHAR proto;    // 协议标识
+	USHORT dataLen; // UDP数据长度
+}UdpHeader;
 
-typedef struct icmp_header {
-	uint8_t type;        // ICMP类型
-	uint8_t code;        // 代码
-	uint16_t checksum;   // 校验和
-	uint16_t identification; // 标识
-	uint16_t sequence;       // 序列号
-	uint32_t init_time;      // 发起时间戳
-	uint16_t recv_time;      // 接受时间戳
-	uint16_t send_time;      // 传输时间戳
-}icmp_header;
+typedef struct IcmpHeader {
+	UCHAR type;        // ICMP类型
+	UCHAR code;        // 代码
+	USHORT checkSum;   // 校验和
+	USHORT identification; // 标识
+	USHORT sequence;       // 序列号
+	UINT initTime;      // 发起时间戳
+	USHORT recvTime;      // 接受时间戳
+	USHORT sendTime;      // 传输时间戳
+}IcmpHeader;
 
-typedef struct http_header
+typedef struct HttpHeader
 {
-	char url[512];
-}http_header;
+	CHAR url[512];
+}HttpHeader;
+
+typedef struct ArpHeader
+{
+	USHORT hardwareType;
+	USHORT protocolType;
+	UCHAR hardwareLength;
+	UCHAR protocolLength;
+	USHORT operationCode;
+	UCHAR sourceEthernetAddress[6];
+	UCHAR sourceIpAddress[4];
+	UCHAR destinationEthernetAddress[6];
+	UCHAR destinationIpAddress[4];
+}ArpHeader;
 
 #endif // !_CAPNET_PROTOCOL_H_
 
