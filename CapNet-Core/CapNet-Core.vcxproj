@@ -154,6 +154,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CapNetCore.cpp" />
+    <ClCompile Include="CapNetDetailParse.cpp" />
     <ClCompile Include="CapNetListenThread.cpp" />
     <ClCompile Include="CapNetStream.cpp" />
     <ClCompile Include="CapNetThread.cpp" />
@@ -162,6 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CapNetCore.h" />
+    <ClInclude Include="CapNetDetailParse.h" />
     <ClInclude Include="CapNetListenThread.h" />
     <ClInclude Include="CapNetStream.h" />
     <ClInclude Include="CapNetThread.h" />

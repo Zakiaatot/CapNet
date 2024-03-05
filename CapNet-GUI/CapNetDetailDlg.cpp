@@ -11,7 +11,8 @@ CapNetDetailDlg::CapNetDetailDlg(UINT packId)
 	CDialogEx(IDD_DETAIL_DIALOG),
 	m_packId(packId),
 	m_rawDataPool(this),
-	m_stringData(this)
+	m_stringData(this),
+	m_treeList(this)
 {
 }
 
@@ -20,6 +21,7 @@ void CapNetDetailDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST1, m_rawDataPool);
 	DDX_Control(pDX, IDC_EDIT1, m_stringData);
+	DDX_Control(pDX, IDC_TREE2, m_treeList);
 }
 
 BOOL CapNetDetailDlg::OnInitDialog()
@@ -30,5 +32,6 @@ BOOL CapNetDetailDlg::OnInitDialog()
 	SetWindowTextW(woss.str().c_str());
 	m_rawDataPool.Init();
 	m_stringData.Init();
+	m_treeList.Init();
 	return TRUE;
 }

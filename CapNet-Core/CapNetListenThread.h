@@ -7,6 +7,7 @@
 #include <vector>
 #include "CapNetCore.h"
 #include "CapNetThread.h"
+#include "CapNetDetailParse.h"
 
 class CapNetListenThread :public CapNetThread
 {
@@ -21,6 +22,7 @@ public:
 	BOOL Running() const { return isRunning_; }
 	VOID Kill();
 	std::vector<BYTE>  GetRawData(UINT pacId);
+	CapNetCore::PacDetailTree GetDetailTree(UINT pacId);
 private:
 	BOOL kill_;
 	pcap_t* adhandle_;

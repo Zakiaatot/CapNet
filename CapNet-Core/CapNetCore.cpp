@@ -192,3 +192,17 @@ CapNetCore::Status<std::vector<BYTE>> CapNetCore::GetRawData(UINT pacId)
 
 	return Status<std::vector<BYTE>>::Ok(pListenThread_->GetRawData(pacId));
 }
+
+CapNetCore::Status<CapNetCore::PacDetailTree> CapNetCore::GenDetailTree(UINT pacId)
+{
+
+	if (!gInit)
+	{
+		return Status<CapNetCore::PacDetailTree>::Err("[CapNetCore] Not Init");
+	}
+	if (!pListenThread_)
+	{
+		return Status<CapNetCore::PacDetailTree>::Err("[CapNetCore] Please Capture Pack First");
+	}
+	return Status<CapNetCore::PacDetailTree>::Ok(pListenThread_->GetDetailTree(pacId));
+}

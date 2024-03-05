@@ -39,6 +39,18 @@ std::vector<BYTE> CapNetListenThread::GetRawData(UINT pacId)
 	return  packMap_[pacId].second;
 }
 
+CapNetCore::PacDetailTree CapNetListenThread::GetDetailTree(UINT pacId)
+{
+	if (packMap_.find(pacId) == packMap_.end())
+		return NULL;
+	std::vector<BYTE> dataVec = packMap_[pacId].second;
+	BYTE* buf = new BYTE[dataVec.size()];
+	int j = 0;
+	for (auto i = dataVec.begin(); i != dataVec.end(); i++)
+		buf[j++] = *i;
+	return CapNetDetailParse::CreataDetailTree(buf);
+}
+
 void CapNetListenThread::Run()
 {
 	isRunning_ = TRUE;

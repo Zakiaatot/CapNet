@@ -11,17 +11,17 @@ typedef struct EtherHeader {
 
 typedef struct IpHeader
 {
-	CHAR version : 4;
-	CHAR headerLength : 4;
-	CHAR tos;
-	USHORT totlaLength;
-	USHORT identification;
-	USHORT flagsOffset;
-	CHAR timeToLive;
-	CHAR protocol;
-	USHORT checkSum;
-	UINT srcAddr;
-	UINT dstAddr;
+	CHAR version : 4;  // 版本
+	CHAR headerLength : 4; // 头部长度
+	CHAR tos; // 服务类型
+	USHORT totlaLength; // 总长度
+	USHORT identification; // 标识
+	USHORT flagsOffset; // 标志 + 分段偏移
+	CHAR timeToLive; // 跳数限制
+	CHAR protocol; // 协议
+	USHORT checkSum; // 校验和
+	UINT srcAddr; // 源地址
+	UINT dstAddr; // 目的地址
 }IpHeader;
 
 typedef struct Ipv6Header

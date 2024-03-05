@@ -65,6 +65,13 @@ public:
 	};
 	typedef VOID(*LISTEN_CALLBACK_FUNC)(CapNetCore::Pack& pack);
 	typedef VOID(*LISTEN_END_CALLBACK_FUNC)(std::wstring& msg);
+	typedef struct _TreeNode
+	{
+		_TreeNode* parent;
+		_TreeNode* firstBrother;
+		_TreeNode* firstChild;
+		WCHAR* text;
+	} PacDetailTreeNode, * PPacDetailTreeNode, * PacDetailTree, * PacDetailTreeRoot;
 
 	StatusVoid Init(); // 初始化
 	Status<std::vector<std::pair<int, std::string>>> FindAllDev(); // 获取所有网卡
@@ -79,6 +86,7 @@ public:
 	StatusVoid EndListen(); // 结束监听
 	StatusVoid SetFilter(std::wstring rule); // 设置过滤器
 	Status<std::vector<BYTE>> GetRawData(UINT pacId); // 获取原始包数据
+	Status<PacDetailTree> GenDetailTree(UINT pacId);
 private:
 	CapNetCore() = default;
 	~CapNetCore() = default;

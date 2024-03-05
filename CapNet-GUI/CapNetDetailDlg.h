@@ -4,6 +4,7 @@
 #include <afxdialogex.h>
 #include "CapNetDetailRawDataPool.h"
 #include "CapNetDetailStringData.h"
+#include "CapNetDetailTreeList.h"
 
 class CapNetDetailDlg : public CDialogEx
 {
@@ -20,6 +21,7 @@ public:
 #endif
 	CapNetDetailRawDataPool m_rawDataPool;
 	CapNetDetailStringData m_stringData;
+	CapNetDetailTreeList m_treeList;
 	UINT m_packId;
 };
 

@@ -84,7 +84,7 @@ void CapNetPackPoolListCtrl::OnNMClick(NMHDR* pNMHDR, LRESULT* pResult)
 	{
 		LVHITTESTINFO tHitTest{};
 		tHitTest.pt = pNMItemActivate->ptAction;
-		t = SendMessage(LVM_SUBITEMHITTEST, 0, reinterpret_cast<LPARAM>(&tHitTest));
+		t = (int)SendMessage(LVM_SUBITEMHITTEST, 0, reinterpret_cast<LPARAM>(&tHitTest));
 	}
 	if (t == -1)
 		return;
@@ -105,7 +105,7 @@ void CapNetPackPoolListCtrl::OnNMRClick(NMHDR* pNMHDR, LRESULT* pResult)
 	{
 		LVHITTESTINFO tHitTest{};
 		tHitTest.pt = pNMItemActivate->ptAction;
-		t = SendMessage(LVM_SUBITEMHITTEST, 0, reinterpret_cast<LPARAM>(&tHitTest));
+		t = (int)SendMessage(LVM_SUBITEMHITTEST, 0, reinterpret_cast<LPARAM>(&tHitTest));
 	}
 	if (t == -1)
 		return;
@@ -132,7 +132,7 @@ VOID CapNetPackPoolListCtrl::OnNMDBLClick(NMHDR* pNMHDR, LRESULT* pResult)
 	{
 		LVHITTESTINFO tHitTest{};
 		tHitTest.pt = pNMItemActivate->ptAction;
-		t = SendMessage(LVM_SUBITEMHITTEST, 0, reinterpret_cast<LPARAM>(&tHitTest));
+		t = (int)SendMessage(LVM_SUBITEMHITTEST, 0, reinterpret_cast<LPARAM>(&tHitTest));
 	}
 	if (t == -1)
 		return;
