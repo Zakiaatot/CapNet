@@ -92,7 +92,7 @@ BOOL CapNetParse::IsHttp(const UCHAR* data)
 		const char* http = (const char*)(data + 14 + 20 + 20);
 		const std::vector<std::string> httpMethods =
 		{
-			"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "TRACE", "CONNECT", "PATCH"
+			"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "TRACE", "CONNECT", "PATCH","HTTP"
 		};
 
 		for (const std::string& method : httpMethods) {
