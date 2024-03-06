@@ -86,7 +86,8 @@ public:
 	StatusVoid EndListen(); // 结束监听
 	StatusVoid SetFilter(std::wstring rule); // 设置过滤器
 	Status<std::vector<BYTE>> GetRawData(UINT pacId); // 获取原始包数据
-	Status<PacDetailTree> GenDetailTree(UINT pacId);
+	Status<PacDetailTree> GenDetailTree(UINT pacId); // 生成报文详情树
+	StatusVoid DelDetailTree(PacDetailTree tree); // 销毁报文详情树
 private:
 	CapNetCore() = default;
 	~CapNetCore() = default;

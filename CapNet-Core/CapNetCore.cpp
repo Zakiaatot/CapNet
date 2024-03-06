@@ -6,6 +6,7 @@
 #include <pcap.h>
 #include "CapNetCore.h"
 #include "CapNetListenThread.h"
+#include "CapNetDetailParse.h"
 
 
 BOOL gInit = FALSE;
@@ -205,4 +206,10 @@ CapNetCore::Status<CapNetCore::PacDetailTree> CapNetCore::GenDetailTree(UINT pac
 		return Status<CapNetCore::PacDetailTree>::Err("[CapNetCore] Please Capture Pack First");
 	}
 	return Status<CapNetCore::PacDetailTree>::Ok(pListenThread_->GetDetailTree(pacId));
+}
+
+CapNetCore::StatusVoid CapNetCore::DelDetailTree(PacDetailTree tree)
+{
+	CapNetDetailParse::DestroyDetailTree(tree);
+	return StatusVoid::Ok();
 }

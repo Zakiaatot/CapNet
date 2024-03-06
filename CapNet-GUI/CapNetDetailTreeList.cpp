@@ -1,10 +1,18 @@
 #include "CapNetDetailTreeList.h"
 #include "CapNetDetailDlg.h"
 #include "CapNetUtils.h"
+#include "CapNetStream.h"
 #include "resource.h"
 
 BEGIN_MESSAGE_MAP(CapNetDetailTreeList, CTreeCtrl)
 END_MESSAGE_MAP()
+
+CapNetDetailTreeList::~CapNetDetailTreeList()
+{
+	if (tree_)
+		Singleton<CapNetCore>::Instance().DelDetailTree(tree_);
+	CTreeCtrl::~CTreeCtrl();
+}
 
 VOID CapNetDetailTreeList::Init()
 {
@@ -18,12 +26,28 @@ VOID CapNetDetailTreeList::Init()
 	{
 		CapNetUtils::AlertErrorW(L"未知错误！");
 	}
+	tree_ = root.ret;
 
-	HTREEITEM Grades = InsertItem(_T("Grade"), 0, 0);
-	HTREEITEM Grade1 = InsertItem(_T("Grade 1"), 1, 1, Grades);
-	HTREEITEM Grade2 = InsertItem(_T("Grade 2"), 1, 1, Grades);
-	HTREEITEM Grade3 = InsertItem(_T("Grade 3"), 1, 1, Grades);
-	Expand(Grades, TVE_EXPAND);
+	CapNetOutStreamW woss;
+	woss << woss.Format(L"No. %d 报文解析", pApp_->m_packId);
+	HTREEITEM begin = InsertItem(woss.str().c_str());
+	InsertTree(tree_, begin);
+	Expand(begin, TVE_EXPAND);
+}
 
+VOID CapNetDetailTreeList::InsertTree(CapNetCore::PacDetailTree tree, HTREEITEM father)
+{
+	if (!tree)
+		return;
+	auto h = InsertItem(tree->text, father);
+	if (tree->firstBrother)
+	{
+		InsertTree(tree->firstBrother, father);
+	}
+	if (tree->firstChild)
+	{
+		InsertTree(tree->firstChild, h);
+	}
+	Expand(h, TVE_EXPAND);
 }
 

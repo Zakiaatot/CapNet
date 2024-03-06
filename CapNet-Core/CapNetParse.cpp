@@ -227,8 +227,8 @@ std::wstring CapNetParse::GetTcpInfo(const UCHAR* data)
 	tcpHdr = (TcpHeader*)(data + 14 + 20);
 	USHORT sport = ntohs(tcpHdr->sourPort);
 	USHORT dport = ntohs(tcpHdr->destPort);
-	USHORT window = tcpHdr->windowSize;
-	INT flags = tcpHdr->flags;
+	USHORT window = ntohs(tcpHdr->windowSize);
+	UCHAR flags = tcpHdr->flags;
 
 	CapNetOutStreamW owss;
 	owss << L"源端口:" << sport
@@ -237,12 +237,11 @@ std::wstring CapNetParse::GetTcpInfo(const UCHAR* data)
 		<< L" 标志:(" << flags << L") ";
 
 	if (flags & 0x08) owss << L"PSH 数据传输";
-	else if (flags & 0x10) owss << L"ACK 响应";
-	else if (flags & 0x02) owss << L"SYN 建立连接";
-	else if (flags & 0x20) owss << L"URG 紧急事件";
-	else if (flags & 0x01) owss << L"FIN 关闭连接";
-	else if (flags & 0x04) owss << L"RST 连接重置";
-	else owss << L"None 未知";
+	if (flags & 0x10) owss << L" ACK 响应";
+	if (flags & 0x02) owss << L" SYN 建立连接";
+	if (flags & 0x20) owss << L" URG 紧急事件";
+	if (flags & 0x01) owss << L" FIN 关闭连接";
+	if (flags & 0x04) owss << L" RST 连接重置";
 
 	return owss;
 }
@@ -268,10 +267,11 @@ std::wstring CapNetParse::GetIcmpInfo(const UCHAR* data)
 	IcmpHeader* icmpHdr;
 	icmpHdr = (struct IcmpHeader*)(data + 14 + 20);
 
-	INT type = icmpHdr->type;
-	INT initTime = icmpHdr->initTime;
-	INT sendTime = icmpHdr->sendTime;
-	INT recvTime = icmpHdr->recvTime;
+	UCHAR type = icmpHdr->type;
+	UINT initTime = ntohl(icmpHdr->initTime);
+	USHORT sendTime = ntohs(icmpHdr->sendTime);
+	USHORT recvTime = ntohs(icmpHdr->recvTime);
+
 	CapNetOutStreamW owss;
 	if (type == 8)
 	{
@@ -297,8 +297,8 @@ std::wstring CapNetParse::GetIpv4Info(const UCHAR* data)
 	SOCKADDR_IN srcAddr = { 0 }, dstAddr = { 0 };
 
 	USHORT checkSum = ntohs(iph->checkSum);
-	UINT ttl = iph->timeToLive;
-	INT proto = iph->protocol;
+	UCHAR ttl = iph->timeToLive;
+	UCHAR proto = iph->protocol;
 
 	srcAddr.sin_addr.s_addr = iph->srcAddr;
 	dstAddr.sin_addr.s_addr = iph->dstAddr;
@@ -326,8 +326,8 @@ std::wstring CapNetParse::GetEtherInfo(const UCHAR* data)
 	ethHdr = (EtherHeader*)data;
 
 	USHORT etherType = ntohs(ethHdr->etherType);  // 以太网类型
-	u_char* etherSrc = ethHdr->etherSHost;         // 以太网原始MAC地址
-	u_char* etherDst = ethHdr->etherDHost;         // 以太网目标MAC地址
+	UCHAR* etherSrc = ethHdr->etherSHost;         // 以太网原始MAC地址
+	UCHAR* etherDst = ethHdr->etherDHost;         // 以太网目标MAC地址
 
 	CapNetOutStreamW owss;
 	owss << L"类型:0x" << std::hex << etherType
@@ -356,8 +356,8 @@ std::wstring CapNetParse::GetArpInfo(const UCHAR* data)
 
 	USHORT hardwareType = ntohs(arpHdr->hardwareType);
 	USHORT protocolType = ntohs(arpHdr->protocolType);
-	INT hardwareLength = arpHdr->hardwareLength;
-	INT protocolLength = arpHdr->protocolLength;
+	UCHAR hardwareLength = arpHdr->hardwareLength;
+	UCHAR protocolLength = arpHdr->protocolLength;
 	USHORT operationCode = ntohs(arpHdr->operationCode);
 
 	// 判读是否为ARP请求包
@@ -366,18 +366,28 @@ std::wstring CapNetParse::GetArpInfo(const UCHAR* data)
 	{
 		woss << L"原MAC地址:";
 		for (INT x = 0; x < 6; x++)
-			woss << woss.Format(L"%X:", arpHdr->sourceEthernetAddress[x]);
+		{
+			if (x != 5)
+				woss << woss.Format(L"%X:", arpHdr->sourceEthernetAddress[x]);
+			else
+				woss << woss.Format(L"%X", arpHdr->sourceEthernetAddress[x]);
+		}
 
 		woss << L" 目标MAC地址:";
 		for (INT x = 0; x < 6; x++)
-			woss << woss.Format(L"%X:", arpHdr->destinationEthernetAddress[x]);
+		{
+			if (x != 5)
+				woss << woss.Format(L"%X:", arpHdr->destinationEthernetAddress[x]);
+			else
+				woss << woss.Format(L"%X", arpHdr->destinationEthernetAddress[x]);
+		}
 
 		switch (operationCode)
 		{
 		case 1: woss << L" ARP 请求"; break;
-		case 2: woss << L"ARP 应答 "; break;
-		case 3: woss << L"RARP 请求 "; break;
-		case 4: woss << L"RARP 应答 "; break;
+		case 2: woss << L" ARP 应答 "; break;
+		case 3: woss << L" RARP 请求 "; break;
+		case 4: woss << L" RARP 应答 "; break;
 		default: break;
 		}
 	}

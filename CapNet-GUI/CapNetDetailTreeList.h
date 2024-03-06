@@ -10,11 +10,14 @@ class CapNetDetailDlg;
 class CapNetDetailTreeList :public CTreeCtrl, public CapNetCommon<CapNetDetailDlg>
 {
 public:
-	explicit CapNetDetailTreeList(CapNetDetailDlg* pApp) :CapNetCommon(pApp) {};
+	explicit CapNetDetailTreeList(CapNetDetailDlg* pApp) :CapNetCommon(pApp), tree_(NULL) {};
+	~CapNetDetailTreeList();
 	VOID Init();
 protected:
 	DECLARE_MESSAGE_MAP()
 private:
+	CapNetCore::PacDetailTree tree_;
+	VOID InsertTree(CapNetCore::PacDetailTree tree, HTREEITEM father);
 };
 
 

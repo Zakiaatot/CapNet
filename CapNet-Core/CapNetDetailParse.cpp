@@ -1,8 +1,10 @@
 #include <vector>
+#include <map>
 #include "CapNetProtocol.h"
 #include "CapNetParse.h"
 #include "CapNetDetailParse.h"
 #include "CapNetStream.h"
+#include <atlstr.h>
 
 using namespace CapNetParse;
 using namespace CapNetDetailParse;
@@ -15,9 +17,89 @@ static WCHAR* NewWStr(const WCHAR* str)
 	return buf;
 }
 
-static inline WCHAR* DelWstr(WCHAR* str)
+static inline VOID DelWstr(WCHAR* str)
 {
 	delete[] str;
+}
+
+std::string FormatKey(std::string& str) {
+	if (str[0] >= 'a' && str[0] <= 'z') {
+		str[0] = str[0] + 'A' - 'a';
+	}
+	size_t position = 0;
+	while ((position = str.find("-", position)) != std::string::npos) {
+		if (str[position + 1] >= 'a' && str[position + 1] <= 'z') {
+			str[position + 1] = str[position + 1] + 'A' - 'a';
+		}
+		position++;
+	}
+	return str;
+}
+
+static std::map<std::string, std::string>  ParseHttp(const UCHAR* data)
+{
+	std::string buf((char*)(data + 14 + 20 + 20));
+	std::map<std::string, std::string> http;
+	std::istringstream bufStream(buf);
+	enum parts {
+		startLine,
+		headers,
+		body
+	};
+	parts part = startLine;
+	std::string line;
+	std::string bodyString;
+	while (getline(bufStream, line)) {
+		switch (part)
+		{
+		case startLine:
+		{
+			std::istringstream lineStream(line);
+			std::string tmp;
+			lineStream >> tmp;
+			if (tmp.find("HTTP") == std::string::npos) {
+				http.insert(std::make_pair("Method", tmp));
+				lineStream >> tmp;
+				http.insert(std::make_pair("Path", tmp));
+				lineStream >> tmp;
+				http.insert(std::make_pair("Version", tmp));
+			}
+			else {
+				http.insert(std::make_pair("Version", tmp));
+				lineStream >> tmp;
+				http.insert(std::make_pair("Status Code", tmp));
+				lineStream >> tmp;
+				http.insert(std::make_pair("Status Text", tmp));
+			}
+			part = headers;
+			break;
+		}
+		case headers:
+		{
+			if (line.size() == 1) {
+				part = body;
+				break;
+			}
+			auto pos = line.find(":");
+			if (pos == std::string::npos)
+				continue;
+			std::string tmp1(line, 0, pos);
+			std::string tmp2(line, pos + 2);
+			http.insert(std::make_pair(FormatKey(tmp1), tmp2));
+			break;
+		}
+		case body:
+		{
+			bodyString.append(line);
+			bodyString.push_back('\n');
+			break;
+		}
+		default:
+			break;
+		}
+	}
+	http.insert(std::make_pair("Body", bodyString));
+	return http;
 }
 
 static PTreeNode GenAttributes
@@ -115,18 +197,18 @@ namespace CapNetDetailParse {
 		iph = (IpHeader*)(data + 14);
 		SOCKADDR_IN srcAddr = { 0 }, dstAddr = { 0 };
 
-		USHORT version = (iph->version) >> 4;
-		USHORT hdrLen = (iph->headerLength & 0x0f) << 2;
-		USHORT priority = (iph->tos) >> 5;
-		USHORT service = (iph->tos >> 1) & 0x0f;
+		UCHAR version = iph->version;
+		UCHAR hdrLen = iph->headerLength * 4;
+		UCHAR priority = (iph->tos) >> 5;
+		UCHAR service = (iph->tos >> 1) & 0x0f;
 		USHORT totalLen = ntohs(iph->totlaLength);
 		USHORT iden = ntohs(iph->identification);
 		USHORT df = (ntohs(iph->flagsOffset) >> 14) & 0x01;
 		USHORT mf = (ntohs(iph->flagsOffset) >> 13) & 0x01;
 		USHORT offset = ntohs(iph->flagsOffset) & 0x1fff;
 		USHORT checkSum = ntohs(iph->checkSum);
-		UINT ttl = iph->timeToLive;
-		INT proto = iph->protocol;
+		UCHAR ttl = iph->timeToLive;
+		UCHAR proto = iph->protocol;
 
 		srcAddr.sin_addr.s_addr = iph->srcAddr;
 		dstAddr.sin_addr.s_addr = iph->dstAddr;
@@ -151,18 +233,18 @@ namespace CapNetDetailParse {
 		CapNetOutStreamW srcOwss;
 		CapNetOutStreamW dstOwss;
 
-		verOwss << "协议版本: " << version;
-		hdrLenOwss << "首部长度: " << hdrLen;
-		serviceOwss << "服务类型: Priority=" << priority << " Service=" << service;
-		totalLenOwss << "总长度: " << totalLen;
-		idenOwss << "标识: " << iden;
-		flagOwss << "标志位: DF=" << df << " MF=" << mf;
-		offsetOwss << "片偏移: " << offset;
-		liveOwss << "生存周期: " << ttl;
-		protocolOwss << "协议类型: " << proto;
-		checkSumOwss << "首部校验和: " << checkSum;
-		srcOwss << "源地址: " << strSaddr;
-		dstOwss << "目的地址: " << strDaddr;
+		verOwss << L"协议版本: " << version;
+		hdrLenOwss << L"首部长度: " << hdrLen;
+		serviceOwss << L"服务类型: Priority=" << priority << L" Service=" << service;
+		totalLenOwss << L"总长度: " << totalLen;
+		idenOwss << L"标识: " << iden;
+		flagOwss << L"标志位: DF=" << df << L" MF=" << mf;
+		offsetOwss << L"片偏移: " << offset;
+		liveOwss << L"生存周期: " << ttl;
+		protocolOwss << L"协议类型: " << proto;
+		checkSumOwss << L"首部校验和: " << checkSum;
+		srcOwss << L"源地址: " << strSaddr;
+		dstOwss << L"目的地址: " << strDaddr;
 
 		attributes.push_back(srcOwss);
 		attributes.push_back(dstOwss);
@@ -210,8 +292,8 @@ namespace CapNetDetailParse {
 		CapNetOutStreamW srcOwss;
 		CapNetOutStreamW dstOwss;
 
-		srcOwss << "源地址: " << strSaddr;
-		dstOwss << "目的地址: " << strDaddr;
+		srcOwss << L"源地址: " << strSaddr;
+		dstOwss << L"目的地址: " << strDaddr;
 
 		attributes.push_back(srcOwss);
 		attributes.push_back(dstOwss);
@@ -230,8 +312,8 @@ namespace CapNetDetailParse {
 
 		USHORT hardwareType = ntohs(arpHdr->hardwareType);
 		USHORT protocolType = ntohs(arpHdr->protocolType);
-		INT hardwareLength = arpHdr->hardwareLength;
-		INT protocolLength = arpHdr->protocolLength;
+		UCHAR hardwareLength = arpHdr->hardwareLength;
+		UCHAR protocolLength = arpHdr->protocolLength;
 		USHORT operationCode = ntohs(arpHdr->operationCode);
 
 		std::vector<std::wstring> attributes;
@@ -241,11 +323,21 @@ namespace CapNetDetailParse {
 
 		srcOwss << L"源MAC地址: ";
 		for (INT x = 0; x < 6; x++)
-			srcOwss << srcOwss.Format(L"%X:", arpHdr->sourceEthernetAddress[x]);
+		{
+			if (x != 5)
+				srcOwss << srcOwss.Format(L"%X:", arpHdr->sourceEthernetAddress[x]);
+			else
+				srcOwss << srcOwss.Format(L"%X", arpHdr->sourceEthernetAddress[x]);
+		}
 
 		dstOwss << L"目标MAC地址: ";
 		for (INT x = 0; x < 6; x++)
-			dstOwss << dstOwss.Format(L"%X:", arpHdr->destinationEthernetAddress[x]);
+		{
+			if (x != 5)
+				dstOwss << srcOwss.Format(L"%X:", arpHdr->destinationEthernetAddress[x]);
+			else
+				dstOwss << srcOwss.Format(L"%X", arpHdr->destinationEthernetAddress[x]);
+		}
 
 		typeOwss << L"类型: ";
 		switch (operationCode)
@@ -275,16 +367,17 @@ namespace CapNetDetailParse {
 		USHORT sport = ntohs(tcpHdr->sourPort);
 		USHORT dport = ntohs(tcpHdr->destPort);
 		USHORT window = ntohs(tcpHdr->windowSize);
-		USHORT offset = (tcpHdr->offset & 0x0f) * 4;
-		USHORT urgFlag = (tcpHdr->flags & 0x20) != 0;
-		USHORT ackFlag = (tcpHdr->flags & 0x10) != 0;
-		USHORT pshFlag = (tcpHdr->flags & 0x08) != 0;
-		USHORT rstFlag = (tcpHdr->flags & 0x04) != 0;
-		USHORT synFlag = (tcpHdr->flags & 0x02) != 0;
-		USHORT finFlag = (tcpHdr->flags & 0x01) != 0;
+		UCHAR offset = tcpHdr->offset * 4;
+		UCHAR urgFlag = (tcpHdr->flags & 0x20) != 0;
+		UCHAR ackFlag = (tcpHdr->flags & 0x10) != 0;
+		UCHAR pshFlag = (tcpHdr->flags & 0x08) != 0;
+		UCHAR rstFlag = (tcpHdr->flags & 0x04) != 0;
+		UCHAR synFlag = (tcpHdr->flags & 0x02) != 0;
+		UCHAR finFlag = (tcpHdr->flags & 0x01) != 0;
 		UINT seq = ntohl(tcpHdr->sequNum);
 		UINT ack = ntohl(tcpHdr->cknowledgeNum);
 		USHORT surgent = ntohs(tcpHdr->surgentPointer);
+		USHORT checkSum = ntohs(tcpHdr->checkSum);
 
 		std::vector<std::wstring> attributes;
 		CapNetOutStreamW srcOwss;
@@ -295,15 +388,17 @@ namespace CapNetDetailParse {
 		CapNetOutStreamW seqOwss;
 		CapNetOutStreamW ackOwss;
 		CapNetOutStreamW surgentOwss;
+		CapNetOutStreamW checkSumOwss;
 
-		srcOwss << "源端口: " << sport;
-		dstOwss << "目的端口: " << dport;
-		windowOwss << "窗口大小: " << window;
-		offsetOwss << "偏移: " << offset;
+		srcOwss << L"源端口: " << sport;
+		dstOwss << L"目的端口: " << dport;
+		windowOwss << L"窗口大小: " << window;
+		offsetOwss << L"头部大小: " << offset;
 		flagOwss << flagOwss.Format(L"标志: URG=%d,ACK=%d,PSH=%d,RST=%d,SYN=%d,FIN=%d ", urgFlag, ackFlag, pshFlag, rstFlag, synFlag, finFlag);
-		seqOwss << "序列号: " << seq;
-		ackOwss << "确认号: " << ack;
-		surgentOwss << "紧急数据偏移: " << surgent;
+		seqOwss << L"序列号: " << seq;
+		ackOwss << L"确认号: " << ack;
+		surgentOwss << L"紧急数据偏移: " << surgent;
+		checkSumOwss << L"校验和: " << checkSum;
 
 		attributes.push_back(srcOwss);
 		attributes.push_back(dstOwss);
@@ -313,6 +408,7 @@ namespace CapNetDetailParse {
 		attributes.push_back(seqOwss);
 		attributes.push_back(ackOwss);
 		attributes.push_back(surgentOwss);
+		attributes.push_back(checkSumOwss);
 
 		PTreeNode last = GenAttributes(tcpNode, attributes);
 
@@ -329,17 +425,94 @@ namespace CapNetDetailParse {
 
 	PTreeNode GenUdpInfo(const UCHAR* data)
 	{
-		return NULL;
+		PTreeNode udpNode = new TreeNode{ 0 };
+		udpNode->text = NewWStr(L"Udp");
+
+		UdpHeader* udpHdr;
+		udpHdr = (UdpHeader*)(data + 14 + 20);
+
+		USHORT sport = ntohs(udpHdr->sport);
+		USHORT dport = ntohs(udpHdr->dport);
+		USHORT dataLen = ntohs(udpHdr->dataLen);
+		UCHAR proto = udpHdr->proto;
+
+		std::vector<std::wstring> attributes;
+		CapNetOutStreamW srcOwss;
+		CapNetOutStreamW dstOwss;
+		CapNetOutStreamW lenOwss;
+		CapNetOutStreamW protocolOwss;
+
+		srcOwss << L"源端口: " << sport;
+		dstOwss << L"目的端口: " << dport;
+		lenOwss << L"数据大小: " << dataLen;
+		protocolOwss << L"协议类型: " << proto;
+
+		attributes.push_back(srcOwss);
+		attributes.push_back(dstOwss);
+		attributes.push_back(lenOwss);
+		attributes.push_back(protocolOwss);
+
+		PTreeNode last = GenAttributes(udpNode, attributes);
+
+		return udpNode;
 	}
 
 	PTreeNode GenIcmpInfo(const UCHAR* data)
 	{
-		return NULL;
+		PTreeNode icmpNode = new TreeNode{ 0 };
+		icmpNode->text = NewWStr(L"Icmp");
+
+		IcmpHeader* icmpHdr;
+		icmpHdr = (struct IcmpHeader*)(data + 14 + 20);
+
+		UCHAR type = icmpHdr->type;
+		UINT initTime = ntohl(icmpHdr->initTime);
+		USHORT sendTime = ntohs(icmpHdr->sendTime);
+		USHORT recvTime = ntohs(icmpHdr->recvTime);
+
+		std::vector<std::wstring> attributes;
+		CapNetOutStreamW initOwss;
+		CapNetOutStreamW sendOwss;
+		CapNetOutStreamW recvOwss;
+		CapNetOutStreamW typeOwss;
+
+		initOwss << L"发起时间戳: " << initTime;
+		sendOwss << L"传输时间戳: " << sendTime;
+		recvOwss << L"接收时间戳: " << recvTime;
+		switch (type)
+		{
+		case 0: typeOwss << L"类型: 回显应答报文"; break;
+		case 8: typeOwss << L"类型: 回显请求报文"; break;
+		default:break;
+		}
+
+		attributes.push_back(initOwss);
+		attributes.push_back(sendOwss);
+		attributes.push_back(recvOwss);
+		attributes.push_back(typeOwss);
+
+		PTreeNode last = GenAttributes(icmpNode, attributes);
+		return icmpNode;
 	}
 
 	PTreeNode GenHttpInfo(const UCHAR* data)
 	{
-		return NULL;
+		PTreeNode httpNode = new TreeNode{ 0 };
+		httpNode->text = NewWStr(L"Http");
+		auto res = ParseHttp(data);
+		std::vector<std::wstring> attributes;
+		for (auto i = res.crbegin(); i != res.crend(); i++)
+		{
+			auto& f = (*i).first;
+			auto& s = (*i).second;
+			CA2W k(f.c_str());
+			CA2W v(s.c_str());
+			CapNetOutStreamW owss;
+			owss << std::wstring(k) << ": " << std::wstring(v);
+			attributes.push_back(owss);
+		}
+		PTreeNode last = GenAttributes(httpNode, attributes);
+		return httpNode;
 	}
 
 	PTreeNode GenHttpsInfo(const UCHAR* data)

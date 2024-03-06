@@ -11,8 +11,8 @@ typedef struct EtherHeader {
 
 typedef struct IpHeader
 {
-	CHAR version : 4;  // 版本
 	CHAR headerLength : 4; // 头部长度
+	CHAR version : 4;  // 版本
 	CHAR tos; // 服务类型
 	USHORT totlaLength; // 总长度
 	USHORT identification; // 标识
