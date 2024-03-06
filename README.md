@@ -4,4 +4,6 @@
 
 Progressing...
 
-![Capture Network](./CapNet.png)
+![Capture Network Main](./CapNet.png)
+
+![Capture Network Detail](./CapNet-Detail.png)
