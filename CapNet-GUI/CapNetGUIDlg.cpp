@@ -23,7 +23,9 @@ CCapNetGUIDlg::CCapNetGUIDlg(CWnd* pParent /*=nullptr*/)
 	m_devSelector(this),
 	m_ruleEdit(this),
 	m_listenButton(this),
-	m_info(this)
+	m_info(this),
+	m_saveButton(this),
+	m_loadButton(this)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDI_ICON2);
 }
@@ -44,6 +46,8 @@ void CCapNetGUIDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT1, m_ruleEdit);
 	DDX_Control(pDX, IDC_LIST3, m_pacPool);
 	DDX_Control(pDX, IDC_BUTTON2, m_listenButton);
+	DDX_Control(pDX, IDC_BUTTON3, m_saveButton);
+	DDX_Control(pDX, IDC_BUTTON1, m_loadButton);
 	DDX_Control(pDX, IDC_TEXT, m_info);
 }
 
@@ -89,6 +93,10 @@ BOOL CCapNetGUIDlg::OnInitDialog()
 	m_ruleEdit.Init();
 	// Info
 	m_info.Init();
+	// Save
+	m_saveButton.Init();
+	// Load
+	m_loadButton.Init();
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }

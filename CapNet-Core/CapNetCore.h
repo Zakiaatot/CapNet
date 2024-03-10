@@ -88,6 +88,14 @@ public:
 	Status<std::vector<BYTE>> GetRawData(UINT pacId); // 获取原始包数据
 	Status<PacDetailTree> GenDetailTree(UINT pacId); // 生成报文详情树
 	StatusVoid DelDetailTree(PacDetailTree tree); // 销毁报文详情树
+	StatusVoid IsSaveable(); // 是否可保存
+	StatusVoid SaveFile(PCWCHAR filePath); // 保存文件
+	StatusVoid LoadFile
+	(
+		CapNetCore::LISTEN_CALLBACK_FUNC pCallback,
+		CapNetCore::LISTEN_END_CALLBACK_FUNC pEndCallback,
+		PCWCHAR filePath
+	); // 加载文件
 private:
 	CapNetCore() = default;
 	~CapNetCore() = default;

@@ -6,6 +6,8 @@
 #include "CapNetDevSelector.h"
 #include "CapNetRuleEdit.h"
 #include "CapNetListenButton.h"
+#include "CapNetSaveButton.h"
+#include "CapNetLoadButton.h"
 #include "CapNetInfo.h"
 
 class CCapNetGUIDlg : public CDialogEx
@@ -30,6 +32,8 @@ public:
 
 	CapNetPackPoolListCtrl m_pacPool;
 	CapNetListenButton m_listenButton;
+	CapNetSaveButton m_saveButton;
+	CapNetLoadButton m_loadButton;
 	CapNetDevSelectorComboBox m_devSelector;
 	CapNetRuleEdit m_ruleEdit;
 	CapNetInfo m_info;

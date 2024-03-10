@@ -15,6 +15,8 @@ VOID CapNetListenButton::Init()
 VOID CapNetListenButton::ListeningStyle()
 {
 	pApp_->m_devSelector.EnableWindow(0);
+	pApp_->m_saveButton.EnableWindow(0);
+	pApp_->m_loadButton.EnableWindow(0);
 	isListening_ = TRUE;
 	SetWindowTextW(L"取消监听");
 	pApp_->m_info.SuccessW(L"开始监听");
@@ -24,6 +26,8 @@ VOID CapNetListenButton::ListeningStyle()
 VOID CapNetListenButton::UnlisteningStyle()
 {
 	pApp_->m_devSelector.EnableWindow(1);
+	pApp_->m_saveButton.EnableWindow(1);
+	pApp_->m_loadButton.EnableWindow(1);
 	isListening_ = FALSE;
 	SetWindowTextW(L"开始监听");
 	pApp_->m_info.SuccessW(L"取消监听");

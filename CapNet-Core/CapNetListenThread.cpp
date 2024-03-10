@@ -51,6 +51,31 @@ CapNetCore::PacDetailTree CapNetListenThread::GetDetailTree(UINT pacId)
 	return CapNetDetailParse::CreataDetailTree(buf);
 }
 
+std::string CapNetListenThread::Save(PCWCHAR filePath)
+{
+	CW2A cw2a(filePath);
+	pcap_dumper_t* dumpfile = pcap_dump_open(adhandle_, cw2a);
+
+	if (dumpfile == NULL)
+	{
+		return "[CapNetCore] Error opening output file";
+	}
+
+	for (auto i = packMap_.begin(); i != packMap_.end(); i++)
+	{
+		BYTE* dataBuf = new UCHAR[i->second.second.size()]{ 0 };
+		INT index = 0;
+		for (auto j = i->second.second.begin(); j != i->second.second.end(); j++)
+		{
+			dataBuf[index++] = *j;
+		}
+		pcap_dump((UCHAR*)dumpfile, &i->second.first, dataBuf);
+		delete[] dataBuf;
+	}
+	pcap_dump_close(dumpfile);
+	return "";
+}
+
 void CapNetListenThread::Run()
 {
 	isRunning_ = TRUE;
@@ -112,16 +137,15 @@ void CapNetListenThread::Run()
 		wsprintfA(buf, "[CapNetCore] Error reading the packets: %s\n", pcap_geterr(adhandle_));
 		CA2W ca2w(buf);
 		errMsg_ = std::wstring(ca2w);
-		pEndCallback_(errMsg_);
+		if (pEndCallback_)
+			pEndCallback_(errMsg_);
 	}
 	else if (res == 0)
 	{
 		// 手动结束
 	}
-	else
-	{
-		errMsg_ = L"[CapNetCore] Unknown Error";
-		pEndCallback_(errMsg_);
-	}
+	std::wstring msg = L"退出";
+	if (pEndCallback_)
+		pEndCallback_(msg);
 	isRunning_ = FALSE;
 }

@@ -197,9 +197,11 @@
     <ClInclude Include="CapNetGUI.h" />
     <ClInclude Include="CapNetGUIDlg.h" />
     <ClInclude Include="CapNetInfo.h" />
+    <ClInclude Include="CapNetLoadButton.h" />
     <ClInclude Include="CapNetRuleEdit.h" />
     <ClInclude Include="CapNetListenButton.h" />
     <ClInclude Include="CapNetPackPool.h" />
+    <ClInclude Include="CapNetSaveButton.h" />
     <ClInclude Include="CapNetStream.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
@@ -215,9 +217,11 @@
     <ClCompile Include="CapNetGUI.cpp" />
     <ClCompile Include="CapNetGUIDlg.cpp" />
     <ClCompile Include="CapNetInfo.cpp" />
+    <ClCompile Include="CapNetLoadButton.cpp" />
     <ClCompile Include="CapNetRuleEdit.cpp" />
     <ClCompile Include="CapNetListenButton.cpp" />
     <ClCompile Include="CapNetPackPool.cpp" />
+    <ClCompile Include="CapNetSaveButton.cpp" />
     <ClCompile Include="CapNetStream.cpp" />
     <ClCompile Include="CapNetUtils.cpp" />
   </ItemGroup>

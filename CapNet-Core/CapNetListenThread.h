@@ -23,6 +23,8 @@ public:
 	VOID Kill();
 	std::vector<BYTE>  GetRawData(UINT pacId);
 	CapNetCore::PacDetailTree GetDetailTree(UINT pacId);
+	INT GetPacNum() const { return (INT)packMap_.size(); }
+	std::string Save(PCWCHAR filePath);
 private:
 	BOOL kill_;
 	pcap_t* adhandle_;

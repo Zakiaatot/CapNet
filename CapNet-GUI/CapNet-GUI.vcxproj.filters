@@ -66,6 +66,12 @@
     <ClInclude Include="CapNetDetailTreeList.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CapNetSaveButton.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CapNetLoadButton.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CapNetGUI.cpp">
@@ -108,6 +114,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CapNetDetailTreeList.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CapNetSaveButton.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CapNetLoadButton.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

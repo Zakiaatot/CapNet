@@ -7,6 +7,7 @@
 #include "CapNetCore.h"
 #include "CapNetListenThread.h"
 #include "CapNetDetailParse.h"
+#include "CapNetStream.h"
 
 
 BOOL gInit = FALSE;
@@ -211,5 +212,69 @@ CapNetCore::Status<CapNetCore::PacDetailTree> CapNetCore::GenDetailTree(UINT pac
 CapNetCore::StatusVoid CapNetCore::DelDetailTree(PacDetailTree tree)
 {
 	CapNetDetailParse::DestroyDetailTree(tree);
+	return StatusVoid::Ok();
+}
+
+CapNetCore::StatusVoid CapNetCore::IsSaveable()
+{
+	if (pListenThread_ == NULL || pListenThread_->GetPacNum() == 0)
+		return StatusVoid::Err("数据为空，请先开始捕获");
+	return StatusVoid::Ok();
+}
+
+CapNetCore::StatusVoid CapNetCore::SaveFile(PCWCHAR filePath)
+{
+	auto res = IsSaveable();
+	if (!res)
+	{
+		return res;
+	}
+	auto msg = pListenThread_->Save(filePath);
+	if (msg.length() > 0)
+	{
+		return StatusVoid::Err(msg.c_str());
+	}
+	else
+	{
+		return StatusVoid::Ok();
+	}
+}
+
+CapNetCore::StatusVoid CapNetCore::LoadFile
+(
+	CapNetCore::LISTEN_CALLBACK_FUNC pCallback,
+	CapNetCore::LISTEN_END_CALLBACK_FUNC pEndCallback,
+	PCWCHAR filePath
+)
+{
+	// kill old Thread if existed
+	if (pListenThread_)
+	{
+		pListenThread_->Kill();
+		delete pListenThread_;
+		pListenThread_ = NULL;
+	}
+
+	CW2A cw2a(filePath);
+
+	/* Open the capture file */
+	CHAR errbuf[256] = { 0 };
+	if ((gAdhandle = pcap_open_offline(cw2a,			// name of the device
+		errbuf					// error buffer
+	)) == NULL)
+	{
+		CapNetOutStreamA aoss;
+		aoss << "[CapNetCore] Unable to open the file: " << errbuf;
+		return StatusVoid::Err(aoss.str().c_str());
+	}
+
+	pListenThread_ = new CapNetListenThread(gAdhandle, pCallback, pEndCallback);
+	if (!pListenThread_->Start())
+	{
+		delete pListenThread_;
+		pListenThread_ = NULL;
+		return StatusVoid::Err("[CapNetCore] Load Error.");
+	}
+
 	return StatusVoid::Ok();
 }
