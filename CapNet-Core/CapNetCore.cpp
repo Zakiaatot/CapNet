@@ -258,7 +258,7 @@ CapNetCore::StatusVoid CapNetCore::LoadFile
 	CW2A cw2a(filePath);
 
 	/* Open the capture file */
-	CHAR errbuf[256] = { 0 };
+	CHAR errbuf[PCAP_ERRBUF_SIZE] = { 0 };
 	if ((gAdhandle = pcap_open_offline(cw2a,			// name of the device
 		errbuf					// error buffer
 	)) == NULL)

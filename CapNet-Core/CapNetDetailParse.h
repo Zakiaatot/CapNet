@@ -26,6 +26,9 @@ namespace CapNetDetailParse
 	PTreeNode GenIcmpInfo(const UCHAR* data);
 	PTreeNode GenHttpInfo(const UCHAR* data);
 	PTreeNode GenHttpsInfo(const UCHAR* data);
+
+	// Detect
+	BOOL DetectSqlInjectByRegx(const UCHAR* data);
 };
 
 

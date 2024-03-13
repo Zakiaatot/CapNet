@@ -1,10 +1,12 @@
 #include <vector>
 #include <map>
+#include <atlstr.h>
+#include <regex>
 #include "CapNetProtocol.h"
 #include "CapNetParse.h"
 #include "CapNetDetailParse.h"
 #include "CapNetStream.h"
-#include <atlstr.h>
+
 
 using namespace CapNetParse;
 using namespace CapNetDetailParse;
@@ -40,6 +42,10 @@ static std::map<std::string, std::string>  ParseHttp(const UCHAR* data)
 {
 	std::string buf((char*)(data + 14 + 20 + 20));
 	std::map<std::string, std::string> http;
+	if (CapNetDetailParse::DetectSqlInjectByRegx(data))
+	{
+		http.insert(std::make_pair("警告", "可能存在SQL注入"));
+	}
 	std::istringstream bufStream(buf);
 	enum parts {
 		startLine,
@@ -518,5 +524,26 @@ namespace CapNetDetailParse {
 	PTreeNode GenHttpsInfo(const UCHAR* data)
 	{
 		return NULL;
+	}
+
+	BOOL DetectSqlInjectByRegx(const UCHAR* data)
+	{
+		std::string buf((char*)(data + 14 + 20 + 20));
+		std::regex sqlInjectionPatterns[] = {
+			std::regex("union\\s+select", std::regex::icase), // UNION SELECT 语句
+			std::regex("\\b(and|or)\\b\\s+\\b(\\d+)\\b", std::regex::icase), // AND/OR 与数字组合
+			std::regex("'\\s*(or|and)\\s*'", std::regex::icase), // 单引号包裹的 OR/AND
+			std::regex("\\b(sleep|benchmark)\\s*\\(", std::regex::icase), // 睡眠/基准测试函数
+			std::regex("(\\%27)|(\\')\\s*\\+\\s*\\+", std::regex::icase), // 字符串连接
+			std::regex("(\\d+)\\s*(\\=|\\>|\\<|\\!)", std::regex::icase) // 数字与比较运算符组合
+		};
+
+		for (const auto& pattern : sqlInjectionPatterns) {
+			if (std::regex_search(buf, pattern)) {
+				return TRUE;
+			}
+		}
+
+		return FALSE;
 	}
 }
