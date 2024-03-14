@@ -98,6 +98,7 @@
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>.\CapNet-Core;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>CapNet-Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>CapNet-Core.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -174,6 +175,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>.\CapNet-Core;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>CapNet-Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>CapNet-Core.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -229,6 +231,7 @@
     <ResourceCompile Include="CapNetGUI.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\x64\Release\CapNet-Core.dll" />
     <None Include="res\CapNetGUI.rc2" />
   </ItemGroup>
   <ItemGroup>

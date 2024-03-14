@@ -4,6 +4,8 @@
 #include "CapNetGUIDlg.h"
 #include "CapNetAboutDlg.h"
 #include "CapNet-Core/CapNetCore.h"
+#include "CapNetUtils.h"
+#include "resource.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -53,6 +55,14 @@ void CCapNetGUIDlg::DoDataExchange(CDataExchange* pDX)
 
 BOOL CCapNetGUIDlg::OnInitDialog()
 {
+	// 释放 DLL
+	WCHAR errBuf[256] = { 0 };
+	CapNetUtils::ReleaseResource(IDR_DLL1, L"DLL", L"CapNet-Core.dll", NULL, errBuf);
+	if (errBuf[0] != 0)
+	{
+		CapNetUtils::AlertErrorW(L"加载失败：释放DLL失败");
+		Exit();
+	}
 	m_pInstance = this;
 	CDialogEx::OnInitDialog();
 
