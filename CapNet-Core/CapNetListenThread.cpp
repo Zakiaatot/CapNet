@@ -3,6 +3,7 @@
 #include <atlstr.h>
 #include "CapNetParse.h"
 #include "CapNetListenThread.h"
+#include "CapNetDetailParse.h"
 
 
 
@@ -125,6 +126,8 @@ void CapNetListenThread::Run()
 
 		auto protocolAndInfo = CapNetParse::GetProtocolAndInfo(pkt_data);
 		pack.protocol = protocolAndInfo.first;
+		if (pack.protocol == L"Http" && CapNetDetailParse::DetectSqlInjectByRegx(pkt_data))
+			pack.isSqlInject = TRUE;
 
 		pack.info = protocolAndInfo.second;
 		if (pCallback_)

@@ -57,6 +57,7 @@ public:
 	{
 		UINT no;
 		UINT length;
+		BOOL isSqlInject;
 		std::wstring time;
 		std::wstring source;
 		std::wstring dest;

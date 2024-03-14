@@ -132,6 +132,7 @@
     <None Include="res\CapNetGUI.rc2">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="..\x64\Release\CapNet-Core.dll" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\CapNetGui.ico">

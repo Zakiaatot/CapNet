@@ -11,6 +11,7 @@ BEGIN_MESSAGE_MAP(CapNetPackPoolListCtrl, CListCtrl)
 	ON_NOTIFY_REFLECT(NM_CLICK, OnNMClick)
 	ON_NOTIFY_REFLECT(NM_RCLICK, OnNMRClick)
 	ON_NOTIFY_REFLECT(NM_DBLCLK, OnNMDBLClick)
+	ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, OnNMCustomdraw)
 	ON_COMMAND(ID_32773, &CapNetPackPoolListCtrl::OnClickPacDetail)
 END_MESSAGE_MAP()
 
@@ -48,6 +49,8 @@ VOID CapNetPackPoolListCtrl::ListenPackLoop(CapNetCore::Pack& pack)
 		return;
 	UINT count = pack.no;
 	gPackPoolListCtrl->InsertItem(count, L"");
+	if (pack.isSqlInject)
+		gPackPoolListCtrl->SetColor(count, 0, RGB(255, 0, 0));
 	WCHAR buf[16] = { 0 };
 	wsprintfW(buf, L"%u", count);
 	gPackPoolListCtrl->SetItemText(count, 0, buf);
@@ -66,6 +69,20 @@ VOID CapNetPackPoolListCtrl::ListenPackEnd(std::wstring& msg)
 	if (!gPackPoolListCtrl)
 		return;
 	CapNetUtils::AlertErrorW(msg.c_str());
+}
+
+VOID CapNetPackPoolListCtrl::SetColor(int iRow, int iCol, COLORREF color)
+{
+	ItemColor itemColor;
+	itemColor.m_iRow = iRow;
+	itemColor.m_iCol = iCol;
+	itemColor.m_TextColor = color;
+	m_itemColors.push_back(itemColor);
+}
+
+VOID CapNetPackPoolListCtrl::ClearColor()
+{
+	m_itemColors.clear();
 }
 
 
@@ -122,6 +139,46 @@ void CapNetPackPoolListCtrl::OnNMRClick(NMHDR* pNMHDR, LRESULT* pResult)
 		popup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
 	}
 	*pResult = 0;
+}
+
+VOID CapNetPackPoolListCtrl::OnNMCustomdraw(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	NMLVCUSTOMDRAW* pLVCD = reinterpret_cast<NMLVCUSTOMDRAW*>(pNMHDR);
+	*pResult = CDRF_DODEFAULT;
+
+	if (CDDS_PREPAINT == pLVCD->nmcd.dwDrawStage)
+	{
+		*pResult = CDRF_NOTIFYITEMDRAW;
+	}
+	else if (CDDS_ITEMPREPAINT == pLVCD->nmcd.dwDrawStage)
+	{
+		*pResult = CDRF_NOTIFYSUBITEMDRAW;
+	}
+	//当pLVCD结构体中nmcd成员的dwDrawStage状态为CDDS_ITEMPREPAINT | CDDS_SUBITEM时，我们就可以根据行和列去设置
+	else if ((CDDS_ITEMPREPAINT | CDDS_SUBITEM) == pLVCD->nmcd.dwDrawStage)
+	{
+		//先将字体颜色和背景颜色设为系统默认                                                               
+		pLVCD->clrTextBk = 16777215;
+		pLVCD->clrText = 0;
+		//遍历字体颜色表
+		for (int i = 0; i < m_itemColors.size(); i++)
+		{
+			//判断该行中是否存在需要改变颜色的单元格
+			if (m_itemColors[i].m_iRow == pLVCD->nmcd.dwItemSpec)
+			{
+				//设置单元格背景颜色，我这里是默认将一整行都设为分红色
+				//如果需要设为其他颜色，或者单独设置某一单元格的颜色，可以效仿字体颜色的方式去添加
+				pLVCD->clrTextBk = RGB(255, 228, 225);
+				//判断该单元格字体是否需要改变颜色
+				if (m_itemColors[i].m_iCol == pLVCD->iSubItem)
+				{
+					pLVCD->clrText = m_itemColors[i].m_TextColor;
+					break;
+				}
+			}
+		}
+		*pResult = CDRF_DODEFAULT;
+	}
 }
 
 VOID CapNetPackPoolListCtrl::OnNMDBLClick(NMHDR* pNMHDR, LRESULT* pResult)

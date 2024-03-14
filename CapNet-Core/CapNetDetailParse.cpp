@@ -90,8 +90,11 @@ static std::map<std::string, std::string>  ParseHttp(const UCHAR* data)
 			if (pos == std::string::npos)
 				continue;
 			std::string tmp1(line, 0, pos);
-			std::string tmp2(line, pos + 2);
-			http.insert(std::make_pair(FormatKey(tmp1), tmp2));
+			if (line.length() >= pos + 2)
+			{
+				std::string tmp2(line, pos + 2);
+				http.insert(std::make_pair(FormatKey(tmp1), tmp2));
+			}
 			break;
 		}
 		case body:
@@ -530,12 +533,12 @@ namespace CapNetDetailParse {
 	{
 		std::string buf((char*)(data + 14 + 20 + 20));
 		std::regex sqlInjectionPatterns[] = {
-			std::regex("union\\s+select", std::regex::icase), // UNION SELECT 语句
-			std::regex("\\b(and|or)\\b\\s+\\b(\\d+)\\b", std::regex::icase), // AND/OR 与数字组合
+			//std::regex("union\\s+select", std::regex::icase), // UNION SELECT 语句
+			//std::regex("\\b(and|or)\\b\\s+\\b(\\d+)\\b", std::regex::icase), // AND/OR 与数字组合
 			std::regex("'\\s*(or|and)\\s*'", std::regex::icase), // 单引号包裹的 OR/AND
-			std::regex("\\b(sleep|benchmark)\\s*\\(", std::regex::icase), // 睡眠/基准测试函数
+			//std::regex("\\b(sleep|benchmark)\\s*\\(", std::regex::icase), // 睡眠/基准测试函数
 			std::regex("(\\%27)|(\\')\\s*\\+\\s*\\+", std::regex::icase), // 字符串连接
-			std::regex("(\\d+)\\s*(\\=|\\>|\\<|\\!)", std::regex::icase) // 数字与比较运算符组合
+			//std::regex("(\\d+)\\s*(\\=|\\>|\\<|\\!)", std::regex::icase) // 数字与比较运算符组合
 		};
 
 		for (const auto& pattern : sqlInjectionPatterns) {
