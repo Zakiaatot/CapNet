@@ -87,20 +87,20 @@ BOOL CapNetParse::IsHttp(const UCHAR* data)
 	if (!IsTcp(data))
 		return FALSE;
 	const TcpHeader* tcpHeader = (const TcpHeader*)(data + 14 + 20);
-	if (ntohs(tcpHeader->destPort) == 80 || ntohs(tcpHeader->sourPort) == 80)
+	//if (ntohs(tcpHeader->destPort) == 80 || ntohs(tcpHeader->sourPort) == 80)
+	//{
+	const char* http = (const char*)(data + 14 + 20 + 20);
+	const std::vector<std::string> httpMethods =
 	{
-		const char* http = (const char*)(data + 14 + 20 + 20);
-		const std::vector<std::string> httpMethods =
-		{
-			"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "TRACE", "CONNECT", "PATCH","HTTP"
-		};
+		"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "TRACE", "CONNECT", "PATCH","HTTP"
+	};
 
-		for (const std::string& method : httpMethods) {
-			if (strstr(http, method.c_str()) != nullptr) {
-				return TRUE;
-			}
+	for (const std::string& method : httpMethods) {
+		if (strstr(http, method.c_str()) != nullptr) {
+			return TRUE;
 		}
 	}
+	//}
 	return FALSE;
 }
 

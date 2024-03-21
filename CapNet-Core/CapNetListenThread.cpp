@@ -49,6 +49,7 @@ CapNetCore::PacDetailTree CapNetListenThread::GetDetailTree(UINT pacId)
 	int j = 0;
 	for (auto i = dataVec.begin(); i != dataVec.end(); i++)
 		buf[j++] = *i;
+	CapNetDetailParse::gEtherLen = dataVec.size();
 	return CapNetDetailParse::CreataDetailTree(buf);
 }
 

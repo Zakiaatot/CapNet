@@ -6,6 +6,8 @@
 
 namespace CapNetDetailParse
 {
+	// Ether Len
+	extern size_t gEtherLen;
 	// Type use
 	using TreeNode = typename CapNetCore::PacDetailTreeNode;
 	using TreeRoot = typename CapNetCore::PacDetailTreeRoot;

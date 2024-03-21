@@ -11,6 +11,8 @@
 using namespace CapNetParse;
 using namespace CapNetDetailParse;
 
+size_t CapNetDetailParse::gEtherLen = 0;
+
 static WCHAR* NewWStr(const WCHAR* str)
 {
 	INT len = (INT)wcslen(str) + 1;
@@ -24,7 +26,7 @@ static inline VOID DelWstr(WCHAR* str)
 	delete[] str;
 }
 
-std::string FormatKey(std::string& str) {
+static std::string FormatKey(std::string& str) {
 	if (str[0] >= 'a' && str[0] <= 'z') {
 		str[0] = str[0] + 'A' - 'a';
 	}
@@ -40,7 +42,10 @@ std::string FormatKey(std::string& str) {
 
 static std::map<std::string, std::string>  ParseHttp(const UCHAR* data)
 {
-	std::string buf((char*)(data + 14 + 20 + 20));
+
+	PCHAR packBuf = new CHAR[CapNetDetailParse::gEtherLen - 14 - 20 - 20  + 1]{ 0 };
+	memcpy(packBuf, PCHAR(data + 14 + 20 + 20), CapNetDetailParse::gEtherLen - 14 - 20 - 20 );
+	std::string buf(packBuf);
 	std::map<std::string, std::string> http;
 	if (CapNetDetailParse::DetectSqlInjectByRegx(data))
 	{
@@ -90,11 +95,9 @@ static std::map<std::string, std::string>  ParseHttp(const UCHAR* data)
 			if (pos == std::string::npos)
 				continue;
 			std::string tmp1(line, 0, pos);
-			if (line.length() >= pos + 2)
-			{
-				std::string tmp2(line, pos + 2);
-				http.insert(std::make_pair(FormatKey(tmp1), tmp2));
-			}
+			std::string tmp2(line, pos + 2);
+			http.insert(std::make_pair(FormatKey(tmp1), tmp2));
+
 			break;
 		}
 		case body:
