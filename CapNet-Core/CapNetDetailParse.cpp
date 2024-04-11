@@ -43,8 +43,8 @@ static std::string FormatKey(std::string& str) {
 static std::map<std::string, std::string>  ParseHttp(const UCHAR* data)
 {
 
-	PCHAR packBuf = new CHAR[CapNetDetailParse::gEtherLen - 14 - 20 - 20  + 1]{ 0 };
-	memcpy(packBuf, PCHAR(data + 14 + 20 + 20), CapNetDetailParse::gEtherLen - 14 - 20 - 20 );
+	PCHAR packBuf = new CHAR[CapNetDetailParse::gEtherLen - 14 - 20 - 20 + 1]{ 0 };
+	memcpy(packBuf, PCHAR(data + 14 + 20 + 20), CapNetDetailParse::gEtherLen - 14 - 20 - 20);
 	std::string buf(packBuf);
 	std::map<std::string, std::string> http;
 	if (CapNetDetailParse::DetectSqlInjectByRegx(data))
@@ -254,6 +254,17 @@ namespace CapNetDetailParse {
 		offsetOwss << L"片偏移: " << offset;
 		liveOwss << L"生存周期: " << ttl;
 		protocolOwss << L"协议类型: " << proto;
+		switch (proto)
+		{
+		case 6:
+			protocolOwss << L"(" << L"Tcp" << L")";
+			break;
+		case 17:
+			protocolOwss << L"(" << L"Udp" << L")";
+			break;
+		default:
+			break;
+		}
 		checkSumOwss << L"首部校验和: 0x" << std::hex << checkSum;
 		srcOwss << L"源地址: " << strSaddr;
 		dstOwss << L"目的地址: " << strDaddr;
